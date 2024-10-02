@@ -1,0 +1,250 @@
+E:.
+│  .eslintignore                // 指定 ESLint 忽略的文件和文件夹
+│  .eslintrc.cjs                // ESLint 配置文件，定义代码质量和风格的规则
+│  .gitignore                   // Git 忽略的文件和文件夹
+│  .prettierignore              // 指定 Prettier 忽略的文件和文件夹
+│  .prettierrc.cjs              // Prettier 配置文件，定义代码格式化规则
+│  auto-imports.d.ts            // TypeScript 类型声明文件，通常用于自动导入的声明
+│  components.d.ts               // 组件的 TypeScript 类型声明文件
+│  directory_structure.txt        // 目录结构说明文档
+│  index.html                    // 项目的入口 HTML 文件
+│  jsconfig.json                 // JavaScript 项目的配置文件，支持 VSCode 的特性
+│  package-lock.json             // 记录项目依赖关系及其确切版本的文件
+│  package.json                  // 项目的配置文件，定义名称、版本、依赖和脚本
+│  postcss.config.cjs            // PostCSS 配置文件，定义 CSS 处理器的插件和设置
+│  README.md                     // 项目的文档文件，包含介绍和使用指南
+│  server.js                     // 服务器配置文件，具体功能取决于实现
+│  tailwind.config.cjs           // Tailwind CSS 配置文件，自定义主题和样式
+│  vite.config.js                // Vite 配置文件，定义构建和开发设置
+│  
+├─.vscode
+│      extensions.json           // 推荐项目所需的 VSCode 扩展
+│      settings.json             // 项目的 VSCode 配置设置
+│      
+├─public
+│      favicon.ico               // 网站的图标文件
+│      
+└─src
+    │  App.vue                   // Vue 应用的根组件
+    │  main.js                   // 应用的入口文件，创建 Vue 实例并挂载
+    │  
+    ├─api
+    │      article.js            // 处理与文章相关的 API 调用
+    │      category.js           // 处理与类别相关的 API 调用
+    │      chat.js               // 处理聊天相关的 API 调用
+    │      comment.js            // 处理评论相关的 API 调用
+    │      config.js             // 配置文件，包含基础 URL 等
+    │      home.js               // 处理与主页相关的 API 调用
+    │      like.js               // 处理点赞功能相关的 API 调用
+    │      links.js              // 处理链接相关的 API 调用
+    │      message.js            // 处理消息相关的 API 调用
+    │      music.js              // 处理音乐相关的 API 调用
+    │      notify.js             // 处理通知相关的 API 调用
+    │      photo.js              // 处理照片相关的 API 调用
+    │      tag.js                // 处理标签相关的 API 调用
+    │      talk.js               // 处理讨论相关的 API 调用
+    │      user.js               // 处理用户相关的 API 调用
+    │      
+    ├─assets
+    │  │  base.css               // 项目的基础样式表
+    │  │  logo.svg               // 项目的 logo 图标
+    │  │  main.css               // 主要的样式表
+    │  │  
+    │  ├─css
+    │  │  └─iconFont
+    │  │          demo.css       // 图标字体的演示样式
+    │  │          demo_index.html // 图标字体的演示 HTML
+    │  │          iconfont.css   // 图标字体的 CSS
+    │  │          iconfont.js    // 图标字体的 JS
+    │  │          iconfont.json  // 图标字体的 JSON 配置
+    │  │          iconfont.ttf    // 图标字体的 TTF 文件
+    │  │          iconfont.woff   // 图标字体的 WOFF 文件
+    │  │          iconfont.woff2  // 图标字体的 WOFF2 文件
+    │  │          
+    │  └─img
+    │          apple-logo-white.svg // 存放的图像文件
+    │          blogAvatar.png       // 头像图像
+    │          macbookpro.png       // MacBook 图像
+    │          
+    ├─components
+    │  │  
+    │  ├─BackTop
+    │  │      index.vue            // 回到顶部组件
+    │  │      
+    │  ├─ChatRoom
+    │  │      index.vue            // 聊天室组件
+    │  │      
+    │  ├─Comment
+    │  │  │  Comment.vue           // 评论主组件
+    │  │  │  tool.js               // 评论相关工具
+    │  │  │  
+    │  │  └─item
+    │  │          ChildrenItem.vue // 子评论组件
+    │  │          CommentInput.vue  // 评论输入组件
+    │  │          IconList.vue      // 图标列表组件
+    │  │          ParentItem.vue     // 父评论组件
+    │  │          
+    │  ├─GsapCount
+    │  │      index.vue            // Gsap 动画计数组件
+    │  │      
+    │  ├─HomeArticle
+    │  │  │  home-article-list.vue // 主页文章列表组件
+    │  │  │  
+    │  │  └─components
+    │  │          article-skeleton.vue // 文章加载骨架屏组件
+    │  │          
+    │  ├─icons
+    │  │      IconCommunity.vue     // 社区图标组件
+    │  │      IconDocumentation.vue  // 文档图标组件
+    │  │      IconEcosystem.vue      // 生态系统图标组件
+    │  │      IconSupport.vue         // 支持图标组件
+    │  │      IconTooling.vue         // 工具图标组件
+    │  │      
+    │  ├─Layout
+    │  │  │  index.vue              // 布局组件
+    │  │  │  
+    │  │  ├─footer
+    │  │  │      blog-footer.vue     // 博客底部组件
+    │  │  │      
+    │  │  ├─header
+    │  │  │  │  blog-header.vue      // 博客头部组件
+    │  │  │  │  
+    │  │  │  └─login
+    │  │  │          login.vue       // 登录组件
+    │  │  │          
+    │  │  └─main
+    │  │          blog-main.vue      // 博客主内容组件
+    │  │          
+    │  ├─Loading
+    │  │      Loading.vue            // 加载动画组件
+    │  │      
+    │  ├─MessageBox
+    │  │      message-box.vue        // 消息弹框组件
+    │  │      
+    │  ├─Music
+    │  │  │  index.vue               // 音乐组件
+    │  │  │  musicTool.js            // 音乐相关工具
+    │  │  │  useMusic.js             // 音乐使用钩子
+    │  │  │  
+    │  │  ├─controls
+    │  │  │  │  index.vue            // 音乐控制组件
+    │  │  │  │  
+    │  │  │  └─components
+    │  │  │          audio-controls.vue // 音频控制组件
+    │  │  │          blogAvatar.png   // 音乐相关图像
+    │  │  │          information.vue   // 音乐信息组件
+    │  │  │          progress-line.vue // 音乐进度条组件
+    │  │  │          time-volume.vue   // 音量时间控制组件
+    │  │  │          
+    │  │  └─list
+    │  │      │  index.vue           // 音乐列表组件
+    │  │      │  
+    │  │      └─components
+    │  │              custom-music-list.vue // 自定义音乐列表组件
+    │  │              lyric-board.vue      // 歌词展示组件
+    │  │              search-list.vue      // 搜索结果列表组件
+    │  │              special-title.vue    // 特殊标题组件
+    │  │              useSpecial.js         // 特殊使用钩子
+    │  │              
+    │  ├─PageHeader
+    │  │      home-header.vue         // 首页头部组件
+    │  │      index.vue               // 页头主组件
+    │  │      
+    │  ├─Pagination
+    │  │      pagination.vue          // 分页组件
+    │  │      
+    │  ├─Search
+    │  │      search.vue              // 搜索组件
+    │  │      
+    │  ├─SvgIcon
+    │  │      index.vue               // SVG 图标组件
+    │  │      
+    │  ├─Upload
+    │  │      index.vue               // 上传文件组件
+    │  │      
+    │  └─WelcomeComps
+    │          index.vue               // 欢迎界面子组件
+    │          
+    ├─config
+    │      config.js                 // 项目相关配置参数，目前只设置了加密功能
+    │      request.js                // 封装 API 请求的工具
+    │      
+    ├─directives
+    │      copy.js                   // 复制文本的自定义指令
+    │      imageLoading.js           // 图片加载的自定义指令
+    │      
+    ├─icons
+    │  └─svg
+    │          icon1.svg             // 存放的 SVG 图标
+    │          icon2.svg             // 另一个 SVG 图标
+    │          
+    ├─router
+    │      index.js                  // 定义项目的路由配置
+    │      
+    ├─store
+    │      index.js                  // Vuex 状态管理的主入口文件
+    │      
+    ├─styles
+    │      base.scss                 // 基础样式文件
+    │      custom.scss               // 自定义样式文件
+    │      markdown.scss             // Markdown 相关样式
+    │      tailwind.css              // Tailwind CSS 样式文件
+    │      variable.scss             // 变量定义文件
+    │      
+    └─utils
+    |    │  encipher.js               // 加密相关工具
+    |    │  enum.js                   // 枚举类型定义工具
+    |    │  tool.js                   // 通用工具函数
+    |    └─transform.js              // 数据转换工具
+    │      
+    └─views
+        │  index.vue                 // 应用主视图组件
+        │  
+        ├─404
+        │      index.vue             // 404 页面组件
+        │      
+        ├─archives
+        │      archives.vue          // 归档页面组件
+        │      
+        ├─article
+        │      article-list.vue      // 文章列表页面组件
+        │      article.vue           // 文章详情页面组件
+        │      
+        ├─category
+        │      category.vue          // 分类页面组件
+        │      
+        ├─home
+        │      home.vue              // 首页组件
+        │      
+        ├─links
+        │      link-apply.vue        // 申请链接页面组件
+        │      link-list.vue         // 链接列表页面组件
+        │      
+        ├─message
+        │      detail.vue            // 消息详情页面组件
+        │      index.vue             // 消息主页面组件
+        │      publish.vue           // 发布消息页面组件
+        │      useMessage.js         // 消息相关钩子
+        │  
+        │  └─components
+        │          card-message.vue   // 消息卡片组件
+        │          danmu-message.vue  // 弹幕消息组件
+        │          
+        ├─photo
+        │      photo-album.vue       // 图片相册页面组件
+        │      photos.vue             // 照片展示页面组件
+        │      
+        ├─resources
+        │      category-list.vue      // 资源分类列表页面组件
+        │      data.js                // 资源数据
+        │      site-list.vue          // 资源网站列表页面组件
+        │      
+        ├─tag
+        │      tag.vue                // 标签页面组件
+        │      
+        ├─talk
+        │      talk.vue               // 讨论页面组件
+        │      
+        └─user
+                user-center.vue       // 用户中心页面组件
+
