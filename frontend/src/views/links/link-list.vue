@@ -128,15 +128,15 @@ onBeforeUnmount(() => {
         <template #title>
           <div class="desc-title">{{ "欢迎来到" + blogName }}</div>
         </template>
-        <el-descriptions-item label="博客链接"
-          ><span v-copy="'http://mrzym.top/'" class="!cursor-pointer">http://mrzym.top/</span>
+        <el-descriptions-item label="博客链接"><span v-copy="'http://mrzym.top/'"
+            class="!cursor-pointer">http://mrzym.top/</span>
         </el-descriptions-item>
         <el-descriptions-item label="QQ">
           <span v-copy="'2715158815'" class="!cursor-pointer">2715158815</span>
         </el-descriptions-item>
         <el-descriptions-item>
           <span class="desc-remark" style="text-shadow: none">
-            快来申请小张的友链吧
+            快来申请范同学的友链吧
             <span class="apply-button" @click="applyLinks">友链申请</span>
           </span>
         </el-descriptions-item>
@@ -153,25 +153,14 @@ onBeforeUnmount(() => {
       <el-row class="site" v-if="linksList.length">
         <el-col :xs="24" :sm="8" v-for="(item, index) in linksList" :key="item.id">
           <el-card class="card-hover animate__animated animate__fadeIn">
-            <div
-              :key="item.id"
-              :style="{
-                zIndex: 1,
-                backgroundImage: `url(${
-                  item.site_avatar || 'http://img.mrzym.top/FgTOrGUz5WJwswSLhPsiGL4DOXe3'
+            <div :key="item.id" :style="{
+              zIndex: 1,
+              backgroundImage: `url(${item.site_avatar || 'http://img.mrzym.top/FgTOrGUz5WJwswSLhPsiGL4DOXe3'
                 })`,
-              }"
-              class="site-item site-mask"
-            >
+            }" class="site-item site-mask">
               <div class="top flex items-center justify-between">
-                <el-avatar
-                  :key="item.id"
-                  fit="cover"
-                  :size="64"
-                  :src="item.site_avatar || returnUrl(item.url)"
-                >
-                  <span class="avatar-font">{{ item.site_name }}</span></el-avatar
-                >
+                <el-avatar :key="item.id" fit="cover" :size="64" :src="item.site_avatar || returnUrl(item.url)">
+                  <span class="avatar-font">{{ item.site_name }}</span></el-avatar>
                 <div class="flex-1 !ml-[2rem]">
                   <span :title="item.site_name" class="name" @click="goToSite(item.url)">{{
                     item.site_name
@@ -182,13 +171,10 @@ onBeforeUnmount(() => {
                 <span :title="item.site_desc" class="desc"> {{ item.site_desc }}</span>
               </div>
               <div class="op-icon" v-if="getUserInfo.id">
-                <el-icon
-                  v-if="getUserInfo.id == 1 || getUserInfo.id == item.user_id"
-                  style="font-size: 16px"
-                  class="op-icon"
-                  @click="updateLink(item)"
-                  ><Edit
-                /></el-icon>
+                <el-icon v-if="getUserInfo.id == 1 || getUserInfo.id == item.user_id" style="font-size: 16px"
+                  class="op-icon" @click="updateLink(item)">
+                  <Edit />
+                </el-icon>
               </div>
             </div>
           </el-card>
@@ -210,6 +196,7 @@ onBeforeUnmount(() => {
   &-title {
     font-size: 1.8rem;
   }
+
   &-remark {
     display: flex;
     width: 100%;
@@ -220,6 +207,7 @@ onBeforeUnmount(() => {
 
 .site {
   transition: height 0.8s ease;
+
   &-item {
     padding: 10px;
     cursor: pointer;
@@ -255,6 +243,7 @@ onBeforeUnmount(() => {
     .bottom {
       width: 100%;
       margin-top: 1rem;
+
       .desc {
         transition: all 0.5s;
         display: -webkit-box;

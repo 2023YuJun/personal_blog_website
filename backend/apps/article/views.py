@@ -1,231 +1,289 @@
-# src/views/article_views.py
-
-from django.http import JsonResponse
-from rest_framework.decorators import api_view
 from rest_framework import status
-from .serializers import ArticleSerializer
-from service.article import article_service
+from rest_framework.views import APIView
+
+from apps.article.article_service import *
 from utils.minioUpload import delete_minio_imgs
 from utils.result import result, ERRORCODE, throw_error
+from .common import create_category_or_return, create_article_tag_by_article_id
 
 error_code = ERRORCODE['ARTICLE']
 
 
-@api_view(['POST'])
-def create_article_view(request):
-    try:
-        article_data = request.data
-        new_article = article_service.create_article(article_data)
-        return JsonResponse(result("新增文章成功", new_article), status=status.HTTP_201_CREATED)
-    except Exception as err:
-        print(err)
-        return JsonResponse(throw_error(error_code, "新增文章失败"), status=status.HTTP_400_BAD_REQUEST)
+class ArticleView(APIView):
 
+    def post(self, request, *args, **kwargs):
+        if request.path.endswith('/add/'):
+            return self.create_article(request)
+        elif request.path.endswith('/titleExist/'):
+            return self.get_article_info_by_title(request)
+        elif request.path.endswith('/getArticleList/'):
+            return self.get_article_list(request)
+        elif request.path.endswith('/getArticleListByTagId/'):
+            return self.get_article_list_by_tag_id(request)
+        elif request.path.endswith('/getArticleListByCategoryId/'):
+            return self.get_article_list_by_category_id(request)
+        elif request.path.endswith('/updateUrl/'):
+            return update_url()
 
-@api_view(['PUT'])
-def update_article_view(request, article_id):
-    try:
-        article_data = request.data
-        old_cover = article_service.get_article_cover_by_id(article_id)
+    def put(self, request, *args, **kwargs):
+        if request.path.endswith('/update/'):
+            return self.update_article(request)
+        elif request.path.endswith('/updateTop/'):
+            id = kwargs.get('id')
+            is_top = kwargs.get('is_top')
+            return self.update_top(request, id, is_top)
+        elif request.path.endswith('/revert/'):
+            id = kwargs.get('id')
+            return self.revert_article(request, id)
+        elif request.path.endswith('/isPublic/'):
+            id = kwargs.get('id')
+            status = kwargs.get('status')
+            return self.toggle_article_public(request, id, status)
+        elif request.path.endswith('/like/'):
+            id = kwargs.get('id')
+            return self.article_like(request, id)
+        elif request.path.endswith('/cancelLike/'):
+            id = kwargs.get('id')
+            return self.cancel_article_like(request, id)
+        elif request.path.endswith('/addReadingDuration/'):
+            id = kwargs.get('id')
+            duration = kwargs.get('duration')
+            return self.add_reading_duration(request, id, duration)
 
-        # 删除旧封面图片的逻辑
-        if old_cover and old_cover != article_data.get('article_cover'):
-            delete_minio_imgs([old_cover.split("/")[-1]])
+    def get(self, request, *args, **kwargs):
+        if request.path.endswith('/add/'):
+            return self.create_article(request)
+        elif request.path.endswith('/blogHomeGetArticleList/'):
+            current = kwargs.get('current')
+            size = kwargs.get('size')
+            return self.blog_home_get_article_list(request, current, size)
+        elif request.path.endswith('/blogTimelineGetArticleList/'):
+            current = kwargs.get('current')
+            size = kwargs.get('size')
+            return self.blog_timeline_get_article_list(request, current, size)
+        elif request.path.endswith('/getRecommendArticleById/'):
+            id = kwargs.get('id')
+            return self.get_recommend_article_by_id(request, id)
+        elif request.path.endswith('/getArticleListByContent/'):
+            content = kwargs.get('content')
+            return self.get_article_list_by_content(request, content)
+        elif request.path.endswith('/getHotArticle/'):
+            return self.get_hot_article(request)
+        elif request.path.endswith('/getArticleById/'):
+            id = kwargs.get('id')
+            return self.get_article_by_id(request, id)
 
-        updated_article = article_service.update_article(article_id, article_data)
-        return JsonResponse(result("修改文章成功", updated_article), status=status.HTTP_200_OK)
-    except Exception as err:
-        print(err)
-        return JsonResponse(throw_error(error_code, "修改文章失败"), status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request, *args, **kwargs):
+        if request.path.endswith('/delete/'):
+            id = kwargs.get('id')
+            status = kwargs.get('status')
+            return self.delete_article(request, id, status)
 
+    def create_article(self, request):
+        try:
+            response = verify_article_param(request)
+            if response is None:
+                response = create_judge_title_exist(request)
+                if response:
+                    data = request.json()
+                    tag_list = data.get("tagList")
+                    category = data.get("category")
+                    data["category_id"] = create_category_or_return(category["category_name"], category["id"])
+                    new_article = create_article(data)
+                    new_article_tag_list = create_article_tag_by_article_id(new_article.id, tag_list)
+                    return Response(result("新增文章成功", {
+                        "article": new_article,
+                        "articleTagList": new_article_tag_list,
+                    }), status=status.HTTP_201_CREATED)
+                else:
+                    return response
+            else:
+                return response
+        except Exception as err:
+            print(err)
+            return Response(throw_error(error_code, "新增文章失败"), status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['PATCH'])
-def update_top_view(request, article_id):
-    try:
-        is_top = request.data.get('is_top')
-        updated_article = article_service.update_top(article_id, is_top)
-        return JsonResponse(result("修改文章置顶状态成功", updated_article), status=status.HTTP_200_OK)
-    except Exception as err:
-        print(err)
-        return JsonResponse(throw_error(error_code, "修改文章置顶状态失败"), status=status.HTTP_400_BAD_REQUEST)
+    def update_article(self, request):
+        with transaction.atomic():
+            try:
+                verify_article_param(request)
+                update_judge_title_exist(request)
+                data = request.json()
+                tag_list = data.pop("tagList")
+                category = data.pop("category")
+                old_cover = get_article_cover_by_id(data["id"])
 
+                # 删除旧封面图片的逻辑
+                if old_cover and old_cover != data["article_cover"]:
+                    delete_minio_imgs([old_cover.split("/")[-1]])
 
-@api_view(['DELETE'])
-def delete_article_view(request, article_id):
-    try:
-        status = request.data.get('status', 0)
-        if status == 3:
-            old_cover = article_service.get_article_cover_by_id(article_id)
-            delete_minio_imgs([old_cover.split("/")[-1]]) if old_cover else None
+                delete_article_tag(data["id"])
+                data["category_id"] = create_category_or_return(category["id"], category["category_name"])
+                new_article_tag_list = create_article_tag_by_article_id(data["id"], tag_list)
+                res = update_article(data)
+                return Response(result("修改文章成功", {
+                    "res": res,
+                    "newArticleTagList": new_article_tag_list,
+                }), status=status.HTTP_200_OK)
+            except Exception as err:
+                print(err)
+                return Response(throw_error(error_code, "修改文章失败"), status=status.HTTP_400_BAD_REQUEST)
 
-        res = article_service.delete_article(article_id, status)
-        return JsonResponse(result("删除文章成功", res), status=status.HTTP_200_OK)
-    except Exception as err:
-        print(err)
-        return JsonResponse(throw_error(error_code, "删除文章失败"), status=status.HTTP_400_BAD_REQUEST)
+    def update_top(self, request, id, is_top):
+        try:
+            verify_top_param(id, is_top)
+            res = update_top(id, is_top)
+            return Response(result("修改文章置顶状态成功", res), status=status.HTTP_200_OK)
+        except Exception as err:
+            print(err)
+            return Response(throw_error(error_code, "修改文章置顶状态失败"), status=status.HTTP_400_BAD_REQUEST)
 
+    def delete_article(self, request, id, status):
+        try:
+            verify_del_param(id, status)
+            if int(status) == 3:
+                old_cover = get_article_cover_by_id(id)
+                delete_minio_imgs([old_cover.split("/")[-1]]) if old_cover else None
 
-@api_view(['POST'])
-def revert_article_view(request, article_id):
-    try:
-        res = article_service.revert_article(article_id)
-        return JsonResponse(result("恢复文章成功", res), status=status.HTTP_200_OK)
-    except Exception as err:
-        print(err)
-        return JsonResponse(throw_error(error_code, "恢复文章失败"), status=status.HTTP_400_BAD_REQUEST)
+            res = delete_article(id, status)
+            return Response(result("删除文章成功", res), status=status.HTTP_200_OK)
+        except Exception as err:
+            print(err)
+            return Response(throw_error(error_code, "删除文章失败"), status=status.HTTP_400_BAD_REQUEST)
 
+    def revert_article(self, request, id):
+        try:
+            res = revert_article(id)
+            return Response(result("恢复文章成功", res), status=status.HTTP_200_OK)
+        except Exception as err:
+            print(err)
+            return Response(throw_error(error_code, "恢复文章失败"), status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['PATCH'])
-def toggle_article_public_view(request, article_id):
-    try:
-        status = request.data.get('status')
-        res = article_service.toggle_article_public(article_id, status)
-        message = "公开文章" if status == 1 else "隐藏文章"
-        return JsonResponse(result(f"{message}成功", res), status=status.HTTP_200_OK)
-    except Exception as err:
-        print(err)
-        return JsonResponse(throw_error(error_code, f"{message}失败"), status=status.HTTP_400_BAD_REQUEST)
+    def toggle_article_public(self, request, id, status):
+        try:
+            verify_del_param(id, status)
+            res = toggle_article_public(id, status)
+            message = "公开文章" if int(status) == 1 else "隐藏文章"
+            return Response(result(f"{message}成功", res), status=status.HTTP_200_OK)
+        except Exception as err:
+            print(err)
+            return Response(throw_error(error_code, message + "失败"), status=status.HTTP_400_BAD_REQUEST)
 
+    def get_article_list(self, request):
+        try:
+            res = get_article_list(request.data)
+            return Response(result("查询文章成功", res), status=status.HTTP_200_OK)
+        except Exception as err:
+            print(err)
+            return Response(throw_error(error_code, "查询文章失败"), status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['POST'])
-def get_article_list_view(request):
-    try:
-        articles = article_service.get_article_list(request.data)
-        return JsonResponse(result("查询文章成功", articles), status=status.HTTP_200_OK)
-    except Exception as err:
-        print(err)
-        return JsonResponse(throw_error(error_code, "查询文章失败"), status=status.HTTP_400_BAD_REQUEST)
+    def get_article_info_by_title(self, request):
+        try:
+            data = request.json()
+            res = get_article_info_by_title(data)
+            return Response(result("文章查询结果", res), status=status.HTTP_200_OK)
+        except Exception as err:
+            print(err)
+            return Response(throw_error(error_code, "根据标题查询文章失败"), status=status.HTTP_400_BAD_REQUEST)
 
+    def get_article_by_id(self, request, id):
+        try:
+            res = get_article_by_id(id)
+            return Response(result("查询文章详情成功", res), status=status.HTTP_200_OK)
+        except Exception as err:
+            print(err)
+            return Response(throw_error(error_code, "查询文章详情失败"), status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['POST'])
-def get_article_info_by_title_view(request):
-    try:
-        title_info = request.data
-        res = article_service.get_article_info_by_title(title_info)
-        return JsonResponse(result("文章查询结果", res), status=status.HTTP_200_OK)
-    except Exception as err:
-        print(err)
-        return JsonResponse(throw_error(error_code, "根据标题查询文章失败"), status=status.HTTP_400_BAD_REQUEST)
+    def blog_home_get_article_list(self, request, current, size):
+        try:
+            res = blog_home_get_article_list(current, size)
+            return Response(result("获取文章列表成功", res), status=status.HTTP_200_OK)
+        except Exception as err:
+            print(err)
+            return Response(throw_error(error_code, "获取文章列表失败"), status=status.HTTP_400_BAD_REQUEST)
 
+    def blog_timeline_get_article_list(self, request, current, size):
+        try:
+            res = blog_timeline_get_article_list(current, size)
+            return Response(result("获取文章时间轴列表成功", res), status=status.HTTP_200_OK)
+        except Exception as err:
+            print(err)
+            return Response(throw_error(error_code, "获取文章列表失败"), status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET'])
-def get_article_by_id_view(request, article_id):
-    try:
-        article = article_service.get_article_by_id(article_id)
-        return JsonResponse(result("查询文章详情成功", article), status=status.HTTP_200_OK)
-    except Exception as err:
-        print(err)
-        return JsonResponse(throw_error(error_code, "查询文章详情失败"), status=status.HTTP_400_BAD_REQUEST)
+    def get_article_list_by_tag_id(self, request):
+        try:
+            data = request.json()
+            id = data.get("id")
+            current = data.get("current")
+            size = data.get("size")
+            if not id:
+                return Response(throw_error(error_code, "标签id不能为空"), status=status.HTTP_400_BAD_REQUEST)
 
+            res = get_article_list_by_tag_id(current, size, id)
+            return Response(result("根据标签获取文章列表成功", res), status=status.HTTP_200_OK)
+        except Exception as err:
+            print(err)
+            return Response(throw_error(error_code, "根据标签获取文章列表失败"), status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET'])
-def blog_home_get_article_list_view(request, current, size):
-    try:
-        articles = article_service.blog_home_get_article_list(current, size)
-        return JsonResponse(result("获取文章列表成功", articles), status=status.HTTP_200_OK)
-    except Exception as err:
-        print(err)
-        return JsonResponse(throw_error(error_code, "获取文章列表失败"), status=status.HTTP_400_BAD_REQUEST)
+    def get_article_list_by_category_id(self, request):
+        try:
+            data = request.json()
+            id = data.get("id")
+            current = data.get("current")
+            size = data.get("size")
+            if not id:
+                return Response(throw_error(error_code, "分类id不能为空"), status=status.HTTP_400_BAD_REQUEST)
 
+            res = get_article_list_by_category_id(current, size, id)
+            return Response(result("根据分类获取文章列表成功", res), status=status.HTTP_200_OK)
+        except Exception as err:
+            print(err)
+            return Response(throw_error(error_code, "根据分类获取文章列表失败"), status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET'])
-def blog_timeline_get_article_list_view(request, current, size):
-    try:
-        articles = article_service.blog_timeline_get_article_list(current, size)
-        return JsonResponse(result("获取文章时间轴列表成功", articles), status=status.HTTP_200_OK)
-    except Exception as err:
-        print(err)
-        return JsonResponse(throw_error(error_code, "获取文章列表失败"), status=status.HTTP_400_BAD_REQUEST)
+    def get_recommend_article_by_id(self, request, id):
+        try:
+            res = get_recommend_article_by_id(id)
+            return Response(result("获取推荐文章成功", res), status=status.HTTP_200_OK)
+        except Exception as err:
+            print(err)
+            return Response(throw_error(error_code, "获取推荐文章失败"), status=status.HTTP_400_BAD_REQUEST)
 
+    def get_article_list_by_content(self, request, content):
+        try:
+            articles = get_article_list_by_content(content)
+            return Response(result("按照内容搜索文章成功", articles), status=status.HTTP_200_OK)
+        except Exception as err:
+            print(err)
+            return Response(throw_error(error_code, "按照内容搜索文章失败"), status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['POST'])
-def get_article_list_by_tag_id_view(request):
-    try:
-        tag_id = request.data.get('id')
-        current = request.data.get('current')
-        size = request.data.get('size')
-        if not tag_id:
-            return JsonResponse(throw_error(error_code, "标签id不能为空"), status=status.HTTP_400_BAD_REQUEST)
+    def get_hot_article(self, request):
+        try:
+            articles = get_hot_article()
+            return Response(result("获取热门文章成功", articles), status=status.HTTP_200_OK)
+        except Exception as err:
+            print(err)
+            return Response(throw_error(error_code, "获取热门文章失败"), status=status.HTTP_400_BAD_REQUEST)
 
-        articles = article_service.get_article_list_by_tag_id(current, size, tag_id)
-        return JsonResponse(result("根据标签获取文章列表成功", articles), status=status.HTTP_200_OK)
-    except Exception as err:
-        print(err)
-        return JsonResponse(throw_error(error_code, "根据标签获取文章列表失败"), status=status.HTTP_400_BAD_REQUEST)
+    def article_like(self, request, id):
+        try:
+            res = article_like(id)
+            return Response(result("点赞成功", res), status=status.HTTP_200_OK)
+        except Exception as err:
+            print(err)
+            return Response(throw_error(error_code, "点赞失败"), status=status.HTTP_400_BAD_REQUEST)
 
+    def cancel_article_like(self, request, id):
+        try:
+            res = cancel_article_like(id)
+            return Response(result("取消点赞成功", res), status=status.HTTP_200_OK)
+        except Exception as err:
+            print(err)
+            return Response(throw_error(error_code, "取消点赞失败"), status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['POST'])
-def get_article_list_by_category_id_view(request):
-    try:
-        category_id = request.data.get('id')
-        current = request.data.get('current')
-        size = request.data.get('size')
-        if not category_id:
-            return JsonResponse(throw_error(error_code, "分类id不能为空"), status=status.HTTP_400_BAD_REQUEST)
-
-        articles = article_service.get_article_list_by_category_id(current, size, category_id)
-        return JsonResponse(result("根据分类获取文章列表成功", articles), status=status.HTTP_200_OK)
-    except Exception as err:
-        print(err)
-        return JsonResponse(throw_error(error_code, "根据分类获取文章列表失败"), status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['GET'])
-def get_recommend_article_by_id_view(request, article_id):
-    try:
-        res = article_service.get_recommend_article_by_id(article_id)
-        return JsonResponse(result("获取推荐文章成功", res), status=status.HTTP_200_OK)
-    except Exception as err:
-        print(err)
-        return JsonResponse(throw_error(error_code, "获取推荐文章失败"), status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['GET'])
-def get_article_list_by_content_view(request, content):
-    try:
-        articles = article_service.get_article_list_by_content(content)
-        return JsonResponse(result("按照内容搜索文章成功", articles), status=status.HTTP_200_OK)
-    except Exception as err:
-        print(err)
-        return JsonResponse(throw_error(error_code, "按照内容搜索文章失败"), status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['GET'])
-def get_hot_article_view(request):
-    try:
-        articles = article_service.get_hot_article()
-        return JsonResponse(result("获取热门文章成功", articles), status=status.HTTP_200_OK)
-    except Exception as err:
-        print(err)
-        return JsonResponse(throw_error(error_code, "获取热门文章失败"), status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['POST'])
-def article_like_view(request, article_id):
-    try:
-        res = article_service.article_like(article_id)
-        return JsonResponse(result("点赞成功", res), status=status.HTTP_200_OK)
-    except Exception as err:
-        print(err)
-        return JsonResponse(throw_error(error_code, "点赞失败"), status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['POST'])
-def cancel_article_like_view(request, article_id):
-    try:
-        res = article_service.cancel_article_like(article_id)
-        return JsonResponse(result("取消点赞成功", res), status=status.HTTP_200_OK)
-    except Exception as err:
-        print(err)
-        return JsonResponse(throw_error(error_code, "取消点赞失败"), status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['POST'])
-def add_reading_duration_view(request, article_id):
-    try:
-        duration = request.data.get('duration')
-        res = article_service.add_reading_duration(article_id, duration)
-        return JsonResponse(result("增加阅读时长成功", res), status=status.HTTP_200_OK)
-    except Exception as err:
-        print(err)
-        return JsonResponse(throw_error(error_code, "增加阅读时长失败"), status=status.HTTP_400_BAD_REQUEST)
+    def add_reading_duration(self, request, id, duration):
+        try:
+            res = add_reading_duration(id, duration)
+            return Response(result("增加阅读时长成功", res), status=status.HTTP_200_OK)
+        except Exception as err:
+            print(err)
+            return Response(throw_error(error_code, "增加阅读时长失败"), status=status.HTTP_400_BAD_REQUEST)

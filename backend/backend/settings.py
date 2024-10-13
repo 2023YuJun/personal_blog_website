@@ -30,6 +30,7 @@ MINIO_BUCKET = 'blog-image'
 
 APP_PORT = 8000
 BASEURL = 'http://127.0.0.1:8000/'
+ADMIN_PASSWORD = ''
 
 # JWT secretkey
 JWT_SECRET = 'blog'
@@ -52,8 +53,21 @@ INSTALLED_APPS = [
     "corsheaders",
     "drf_yasg",
     "channels",
-
-
+    "apps.article",
+    "apps.category",
+    "apps.chat",
+    "apps.comment",
+    "apps.config",
+    "apps.header",
+    "apps.like",
+    "apps.links",
+    "apps.message",
+    "apps.notify",
+    "apps.photo",
+    "apps.recommend",
+    "apps.tag",
+    "apps.talk",
+    "apps.user",
 ]
 
 # 指定 ASGI 应用程序
@@ -80,6 +94,11 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "middlewares.AuthMiddleware",
+    "middlewares.NeedAdminAuthNotNeedSuperMiddleware",
+    "middlewares.AdminAuthMiddleware",
+    "middlewares.SuperAdminAuthMiddleware",
+    "middlewares.RateLimitMiddleware"
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -99,9 +118,6 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
             ],
-            "libraries": {
-                'test_tags': 'templatetags.test_tags',
-            },
         },
     },
 ]
@@ -145,7 +161,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Shanghai"
 
 USE_I18N = True
 

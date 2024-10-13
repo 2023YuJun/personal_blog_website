@@ -12,7 +12,7 @@ export const homeGetConfig = () => {
 /** 增加网站访问量 */
 export const addView = () => {
   return new Promise((resolve, reject) => {
-    http.put("/api/config/addView", {}).then((res) => {
+    http.put("/api/config/addView/", {}).then((res) => {
       resolve(res);
     });
   });

@@ -408,15 +408,8 @@ onBeforeUnmount(() => {
 
 <template>
   <div>
-    <el-popover
-      :visible="chatVisible"
-      placement="bottom-start"
-      :width="isPc ? '580' : '380'"
-      trigger="contextmenu"
-      @after-leave="afterLeaveRoom"
-      @after-enter="afterEnterRoom"
-      style="z-index: 1000"
-    >
+    <el-popover :visible="chatVisible" placement="bottom-start" :width="isPc ? '580' : '380'" trigger="contextmenu"
+      @after-leave="afterLeaveRoom" @after-enter="afterEnterRoom" style="z-index: 1000">
       <template #reference>
         <div @click="chatVisible = true" class="blog-chat-btn grid place-items-center">
           <i v-if="!newMessageCount" class="iconfont icon-pinglun"></i>
@@ -430,11 +423,9 @@ onBeforeUnmount(() => {
           <div class="chat-bg">
             <div class="chat-header box-shadow flex items-center justify-between">
               <div class="left">
-                小张的聊天室
+                聊天室
                 <span v-if="isConnecting" class="!ml-[10px] text-sm online-total">连接中...</span>
-                <span v-else class="!ml-[10px] text-sm online-total"
-                  >在线人数 {{ onlineList.length || 0 }} 人</span
-                >
+                <span v-else class="!ml-[10px] text-sm online-total">在线人数 {{ onlineList.length || 0 }} 人</span>
               </div>
               <div class="right flex items-center">
                 <el-popover style="padding: 0" placement="bottom" :width="200" trigger="click">
@@ -443,52 +434,28 @@ onBeforeUnmount(() => {
                   </template>
                   <div class="!min-h-[300px] overflow-auto">
                     <div class="!p-[10px]">
-                      <div
-                        v-for="user in onlineList"
-                        :key="user.user_id"
-                        class="flex items-center box-shadow !py-[3px] !mb-[5px]"
-                      >
-                        <el-avatar
-                          :size="32"
-                          class="!mr-[10px] min-w-[32px] min-h-[32px]"
-                          :src="user.avatar"
-                        ></el-avatar>
+                      <div v-for="user in onlineList" :key="user.user_id"
+                        class="flex items-center box-shadow !py-[3px] !mb-[5px]">
+                        <el-avatar :size="32" class="!mr-[10px] min-w-[32px] min-h-[32px]"
+                          :src="user.avatar"></el-avatar>
                         <span class="!mr-[10px] nick-name">{{ user.nick_name }}</span>
-                        <el-button
-                          v-if="getUserInfo.role == 1 && user.user_id != getUserInfo.id"
-                          type="danger"
-                          size="small"
-                          @click="offlineUser(user.user_id, user.nick_name)"
-                        >
+                        <el-button v-if="getUserInfo.role == 1 && user.user_id != getUserInfo.id" type="danger"
+                          size="small" @click="offlineUser(user.user_id, user.nick_name)">
                           下线
                         </el-button>
                       </div>
                     </div>
                   </div>
                 </el-popover>
-                <el-button
-                  v-if="getUserInfo.role == '1'"
-                  type="danger"
-                  size="small"
-                  class="!ml-[10px]"
-                  @click="clearHistory"
-                >
+                <el-button v-if="getUserInfo.role == '1'" type="danger" size="small" class="!ml-[10px]"
+                  @click="clearHistory">
                   清空记录
                 </el-button>
-                <el-button
-                  v-if="!websocket && getUserInfo.id"
-                  type="primary"
-                  size="small"
-                  class="!ml-[10px]"
-                  :icon="Connection"
-                  @click="reConnect"
-                >
+                <el-button v-if="!websocket && getUserInfo.id" type="primary" size="small" class="!ml-[10px]"
+                  :icon="Connection" @click="reConnect">
                   重连
                 </el-button>
-                <i
-                  class="!ml-[10px] iconfont icon-off-search change-color"
-                  @click="chatVisible = false"
-                ></i>
+                <i class="!ml-[10px] iconfont icon-off-search change-color" @click="chatVisible = false"></i>
               </div>
             </div>
             <div id="root" class="chat-container" ref="chatContainerRef">
@@ -504,20 +471,11 @@ onBeforeUnmount(() => {
                       <span class="user-name">{{ message.nick_name }}</span>
                     </div>
                     <el-dropdown :trigger="isPc ? 'contextmenu' : 'click'" placement="bottom-start">
-                      <div
-                        v-if="message.content_type == 'text'"
-                        class="message-content"
-                        v-html="message.content"
-                      ></div>
+                      <div v-if="message.content_type == 'text'" class="message-content" v-html="message.content"></div>
                       <div v-else class="message-image" v-image="message.content">
                         <div class="!w-[100%] !h-[100%] rounded-md overflow-hidden">
-                          <el-image
-                            class="!w-[100%] !h-[100%]"
-                            :src="message.content"
-                            fit="cover"
-                            :preview-src-list="[message.content]"
-                            preview-teleported
-                          >
+                          <el-image class="!w-[100%] !h-[100%]" :src="message.content" fit="cover"
+                            :preview-src-list="[message.content]" preview-teleported>
                             <template #error>
                               <div class="image-error !w-[100%] !h-[100%] grid place-items-center">
                                 <svg-icon name="image404" :width="4" :height="4"></svg-icon>
@@ -525,24 +483,17 @@ onBeforeUnmount(() => {
                             </template>
                           </el-image>
                         </div>
-                        <span
-                          v-if="
-                            !isPc &&
-                            getUserInfo.id &&
-                            (getUserInfo.id === message.user_id || getUserInfo.role == 1)
-                          "
-                          class="revert"
-                        ></span>
+                        <span v-if="
+                          !isPc &&
+                          getUserInfo.id &&
+                          (getUserInfo.id === message.user_id || getUserInfo.role == 1)
+                        " class="revert"></span>
                       </div>
                       <template #dropdown>
-                        <el-dropdown-item
-                          v-if="
-                            getUserInfo.id &&
-                            (getUserInfo.role == 1 || getUserInfo.id == message.user_id)
-                          "
-                          @click="revertOneChat(message.id)"
-                          >撤回</el-dropdown-item
-                        >
+                        <el-dropdown-item v-if="
+                          getUserInfo.id &&
+                          (getUserInfo.role == 1 || getUserInfo.id == message.user_id)
+                        " @click="revertOneChat(message.id)">撤回</el-dropdown-item>
                       </template>
                     </el-dropdown>
                   </div>
@@ -559,20 +510,11 @@ onBeforeUnmount(() => {
                       <span class="user-name">{{ message.nick_name }}</span>
                     </div>
                     <el-dropdown trigger="contextmenu" placement="bottom-start">
-                      <div
-                        v-if="message.content_type == 'text'"
-                        class="message-content"
-                        v-html="message.content"
-                      ></div>
+                      <div v-if="message.content_type == 'text'" class="message-content" v-html="message.content"></div>
                       <div v-else class="message-image" v-image="message.content">
                         <div class="!w-[100%] !h-[100%] rounded-md overflow-hidden">
-                          <el-image
-                            class="!w-[100%] !h-[100%]"
-                            :src="message.content"
-                            fit="cover"
-                            :preview-src-list="[message.content]"
-                            preview-teleported
-                          >
+                          <el-image class="!w-[100%] !h-[100%]" :src="message.content" fit="cover"
+                            :preview-src-list="[message.content]" preview-teleported>
                             <template #error>
                               <div class="image-error !w-[100%] !h-[100%] grid place-items-center">
                                 <svg-icon name="image404" :width="4" :height="4"></svg-icon>
@@ -580,25 +522,18 @@ onBeforeUnmount(() => {
                             </template>
                           </el-image>
                         </div>
-                        <span
-                          v-if="
-                            !isPc &&
-                            getUserInfo.id &&
-                            (getUserInfo.id === message.user_id || getUserInfo.role == 1)
-                          "
-                          class="revert"
-                        ></span>
+                        <span v-if="
+                          !isPc &&
+                          getUserInfo.id &&
+                          (getUserInfo.id === message.user_id || getUserInfo.role == 1)
+                        " class="revert"></span>
                       </div>
                       <template #dropdown>
-                        <el-dropdown-item
-                          v-if="
-                            getUserInfo.id &&
-                            (getUserInfo.role == 1 || getUserInfo.id == message.user_id)
-                          "
-                          :trigger="isPc ? 'contextmenu' : 'click'"
-                          @click="revertOneChat(message.id)"
-                          >撤回</el-dropdown-item
-                        >
+                        <el-dropdown-item v-if="
+                          getUserInfo.id &&
+                          (getUserInfo.role == 1 || getUserInfo.id == message.user_id)
+                        " :trigger="isPc ? 'contextmenu' : 'click'"
+                          @click="revertOneChat(message.id)">撤回</el-dropdown-item>
                       </template>
                     </el-dropdown>
                   </div>
@@ -610,26 +545,16 @@ onBeforeUnmount(() => {
                 <IconList @select-icon="selectIcon" />
               </div>
               <div class="!mt-[10px] !mr-[5px]" v-if="getUserInfo.id">
-                <el-upload
-                  ref="imageUpload"
-                  :auto-upload="false"
-                  :limit="1"
-                  :on-change="handleChange"
-                  :show-file-list="false"
-                  :disabled="imageUploading"
-                >
+                <el-upload ref="imageUpload" :auto-upload="false" :limit="1" :on-change="handleChange"
+                  :show-file-list="false" :disabled="imageUploading">
                   <Loading v-if="imageUploading" :size="18" />
-                  <el-icon v-else style="font-size: 18px"><UploadFilled /></el-icon>
+                  <el-icon v-else style="font-size: 18px">
+                    <UploadFilled />
+                  </el-icon>
                 </el-upload>
               </div>
-              <div
-                class="send-content"
-                ref="inputChatRef"
-                contenteditable="true"
-                @click="keepIndex"
-                @blur="keepIndex"
-                placeholder="快来聊天吧"
-              ></div>
+              <div class="send-content" ref="inputChatRef" contenteditable="true" @click="keepIndex" @blur="keepIndex"
+                placeholder="快来聊天吧"></div>
               <span class="send-btn" @click="sendMessage">发送</span>
             </div>
           </div>
@@ -649,6 +574,7 @@ onBeforeUnmount(() => {
   border-radius: 20px;
   color: var(--font-color);
   transition: all 0.3s;
+
   .icon-pinglun {
     font-size: 2.8rem;
     transform: rotateY(180deg);
@@ -662,6 +588,7 @@ onBeforeUnmount(() => {
   display: grid;
   place-items: center;
   overflow: hidden;
+
   .chat-card {
     width: 100%;
     height: 100%;
@@ -752,6 +679,7 @@ onBeforeUnmount(() => {
         font-weight: 700;
         transition: all 0.3s;
         box-shadow: 0 3px 6px 3px rgba(7, 17, 27, 0.06);
+
         &:hover {
           box-shadow: 0 3px 6px 3px rgba(7, 17, 27, 0.15);
         }
@@ -777,6 +705,7 @@ onBeforeUnmount(() => {
         color: var(--global-white);
         cursor: pointer;
         transition: all 0.3s;
+
         &:hover {
           box-shadow: 0 3px 6px 3px rgba(7, 17, 27, 0.15);
         }

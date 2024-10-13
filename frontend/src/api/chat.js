@@ -3,7 +3,7 @@ import http from "@/config/request";
 /** 获取聊天信息 */
 export const getChatList = (data) => {
   return new Promise((resolve, reject) => {
-    http.post("/api/chat/getChatList", data).then((res) => {
+    http.post("/api/chat/getChatList/", data).then((res) => {
       resolve(res);
     });
   });

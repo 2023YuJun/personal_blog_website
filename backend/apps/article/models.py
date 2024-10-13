@@ -20,7 +20,7 @@ class Article(models.Model):
     article_title = models.CharField(max_length=255, verbose_name='文章标题')
     author_id = models.IntegerField(default=1, verbose_name='文章作者')
     category_id = models.IntegerField(null=True, verbose_name='分类id')
-    article_content = models.TextField(blank=True, verbose_name='文章内容')
+    article_content = models.TextField(null=True, blank=True, verbose_name='文章内容')
     article_cover = models.CharField(max_length=1234, default='https://mrzym.gitee.io/blogimg/html/rabbit.png',
                                      verbose_name='文章缩略图')
     is_top = models.IntegerField(default=2, choices=IS_TOP_CHOICES, verbose_name='是否置顶')

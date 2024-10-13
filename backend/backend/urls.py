@@ -18,5 +18,19 @@ from django.urls import path, include
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-
+    path("", include('apps.article.urls')),
+    path("", include('apps.category.urls')),
+    path("", include('apps.chat.urls')),
+    path("", include('apps.comment.urls')),
+    path("", include('apps.config.urls')),
+    path("", include('apps.header.urls')),
+    path("", include('apps.like.urls')),
+    path("", include('apps.links.urls')),
+    path("", include('apps.message.urls')),
+    path("", include('apps.notify.urls')),
+    path("", include('apps.photo.urls')),
+    # path("", include('apps.recommend.urls')),
+    path("", include('apps.tag.urls')),
+    path("", include('apps.talk.urls')),
+    path("", include('apps.user.urls')),
 ]

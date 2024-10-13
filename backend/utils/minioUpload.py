@@ -5,7 +5,6 @@ from django.conf import settings
 from minio import Minio
 
 # MinIO 配置
-UPLOADTYPE = settings.UPLOADTYPE
 MINIO_ACCESSKEY = settings.MINIO_ACCESSKEY
 MINIO_SECRETKEY = settings.MINIO_SECRETKEY
 MINIO_BUCKET = settings.MINIO_BUCKET
@@ -14,19 +13,19 @@ MINIO_PORT = settings.MINIO_PORT or 9000
 
 minio_client = None
 
-if UPLOADTYPE == "minio":
-    if MINIO_PATH and MINIO_ACCESSKEY and MINIO_SECRETKEY:
-        try:
-            minio_client = Minio(
-                MINIO_PATH,
-                access_key=MINIO_ACCESSKEY,
-                secret_key=MINIO_SECRETKEY,
-                secure=False
-            )
-        except Exception as err:
-            print(err)
-    else:
-        print("请在settings中完善minio配置项")
+
+if MINIO_PATH and MINIO_ACCESSKEY and MINIO_SECRETKEY:
+    try:
+        minio_client = Minio(
+            MINIO_PATH,
+            access_key=MINIO_ACCESSKEY,
+            secret_key=MINIO_SECRETKEY,
+            secure=False
+        )
+    except Exception as err:
+        print(err)
+else:
+    print("请在settings中完善minio配置项")
 
 
 # 生成随机文件名
