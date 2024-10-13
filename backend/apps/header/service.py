@@ -1,5 +1,6 @@
 from apps.header.models import Header
 from django.db import transaction
+from django.utils import timezone
 
 
 def add_or_update_header(header_data):
@@ -7,17 +8,21 @@ def add_or_update_header(header_data):
     新增 / 修改 背景
     """
     header_id = header_data.get('id')
+    current_time = timezone.localtime()
     if header_id:
         with transaction.atomic():
             Header.objects.filter(id=header_id).update(
                 route_name=header_data['route_name'],
-                bg_url=header_data['bg_url']
+                bg_url=header_data['bg_url'],
+                updatedAt=current_time
             )
     else:
         with transaction.atomic():
             Header.objects.create(
                 route_name=header_data['route_name'],
-                bg_url=header_data['bg_url']
+                bg_url=header_data['bg_url'],
+                createdAt=current_time,
+                updatedAt=current_time
             )
     return True
 

@@ -211,6 +211,7 @@ class RateLimitMiddleware:
             'comment/apply/': {'max_requests': 20, 'interval': 60, 'message': '回复评论过于频繁 请稍后再试'},
             'comment/thumbUp/': {'max_requests': 10, 'interval': 60, 'message': '点赞过于频繁 请稍后再试'},
             'comment/cancelCommentLike/': {'max_requests': 10, 'interval': 60, 'message': '取消点赞过于频繁 请稍后再试'},
+            'upload/img/': {'max_requests': 100, 'interval': 60, 'message': '上传图片过于频繁 请稍后再试'},
             'config/addView/': {'max_requests': 100, 'interval': 60, 'message': '访问网站过于频繁 请稍后再试'},
             'like/addLike/': {'max_requests': 10, 'interval': 60, 'message': '点赞过于频繁 请稍后再试'},
             'like/cancelLike/': {'max_requests': 10, 'interval': 60, 'message': '取消点赞过于频繁 请稍后再试'},

@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from utils.result import result, ERRORCODE, throw_error
-from apps.header.header import *
+from apps.header.service import *
 from utils.minioUpload import delete_minio_imgs
 
 error_code = ERRORCODE['HEADER']

@@ -3,7 +3,7 @@ import http from "@/config/request";
 /** 首页获取网站config */
 export const homeGetConfig = () => {
   return new Promise((resolve, reject) => {
-    http.get("/api/config", {}).then((res) => {
+    http.get("/api/config/", {}).then((res) => {
       resolve(res);
     });
   });
@@ -21,7 +21,7 @@ export const addView = () => {
 /** 获取所有的背景图片 */
 export const getAllPageHeader = () => {
   return new Promise((resolve, reject) => {
-    http.get("/api/pageHeader/getAll", {}).then((res) => {
+    http.get("/api/pageHeader/getAll/", {}).then((res) => {
       resolve(res);
     });
   });

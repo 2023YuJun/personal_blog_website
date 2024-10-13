@@ -80,7 +80,7 @@ export default defineConfig({
       },
       // minio 代理
       "/blog-images": {
-        target: "http://mrzym.top:9000/blog-images",
+        target: "http://110.41.38.135:9000/blog-images",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/blog-images/, ""),
       },

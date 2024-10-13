@@ -4,72 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01d6a626-47e0-4c13-8582-b462f8b63d5e" name="更改" comment="add README.md">
+    <list default="true" id="01d6a626-47e0-4c13-8582-b462f8b63d5e" name="更改" comment="添加后台管理页面开发内容">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/article/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/article/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/article/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/article/common.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/article/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/article/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/article/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/article/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/article/service/article.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/article/service/articleTag.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/article/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/article/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/article/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/article/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/category/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/category/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/category/service/category.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/category/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/category/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/chat/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/chat/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/chat/service/chat.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/chat/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/chat/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/comment/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/comment/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/comment/service/comment.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/comment/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/comment/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/config/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/config/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/config/service/config.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/config/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/config/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/header/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/header/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/header/service/header.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/header/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/header/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/like/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/like/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/like/service/like.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/like/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/like/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/links/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/links/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/links/service/links.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/links/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/links/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/message/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/message/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/message/service/message.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/message/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/message/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/notify/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/notify/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/notify/service/notify.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/notify/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/notify/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/photo/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/photo/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/photo/service/photo.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/photo/service/photoAlbum.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/photo/views.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/recommend/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/recommend/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/tag/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/tag/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/tag/service/tag.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/tag/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/tag/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/talk/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/talk/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/talk/service/talk.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/talk/service/talkPhoto.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/talk/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/talk/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/user/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/user/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/user/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/user/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/user/service/user.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/user/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/user/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/backend/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/backend/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/backend/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/backend/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/templatetags/test_tags.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/utils/minioUpload.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/utils/minioUpload.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/utils/websocket.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/utils/websocket.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/chat.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/chat.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/config.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/links.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/links.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/talk.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/talk.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/ChatRoom/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/ChatRoom/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Layout/footer/blog-footer.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Layout/footer/blog-footer.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/utils/tool.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/utils/tool.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/links/link-list.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/links/link-list.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,6 +39,7 @@
     "node.js.selected.package.stylelint": "E:\\personal_blog_website\\dashboard\\node_modules\\stylelint",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -118,7 +55,8 @@
       <workItem from="1727895320724" duration="172000" />
       <workItem from="1727926771724" duration="2000" />
       <workItem from="1727926809756" duration="2000" />
-      <workItem from="1728816962764" duration="855000" />
+      <workItem from="1728816962764" duration="983000" />
+      <workItem from="1728818480183" duration="752000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1727894924909</created>
@@ -155,7 +93,21 @@
       <option name="project" value="LOCAL" />
       <updated>1727895481258</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="优化后端目录结构，修改部分app的service逻辑">
+      <created>1728817834774</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1728817834774</updated>
+    </task>
+    <task id="LOCAL-00007" summary="添加后台管理页面开发内容">
+      <created>1728817890225</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1728817890225</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -187,6 +139,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="initial commit" />
     <MESSAGE value="add README.md" />
-    <option name="LAST_COMMIT_MESSAGE" value="add README.md" />
+    <MESSAGE value="优化后端目录结构，修改部分app的service逻辑" />
+    <MESSAGE value="添加后台管理页面开发内容" />
+    <option name="LAST_COMMIT_MESSAGE" value="添加后台管理页面开发内容" />
   </component>
 </project>

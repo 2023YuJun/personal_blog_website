@@ -2,8 +2,8 @@ from django.db import models
 
 
 class Config(models.Model):
-    blog_name = models.CharField(max_length=55, default='范同学的博客', verbose_name='博客名称')
-    blog_avatar = models.CharField(max_length=255, default='https://mrzym.gitee.io/blogimg/html/rabbit.png',
+    blog_name = models.CharField(max_length=55, null=True, default='范同学的博客', verbose_name='博客名称')
+    blog_avatar = models.CharField(max_length=255, null=True, default='https://mrzym.gitee.io/blogimg/html/rabbit.png',
                                    verbose_name='博客头像')
     avatar_bg = models.CharField(max_length=255, null=True, blank=True, verbose_name='博客头像背景图')
     personal_say = models.CharField(max_length=255, null=True, blank=True, verbose_name='个人签名')
@@ -13,7 +13,7 @@ class Config(models.Model):
     github_link = models.CharField(max_length=255, null=True, blank=True, verbose_name='GitHub链接')
     git_ee_link = models.CharField(max_length=255, null=True, blank=True, verbose_name='Git EE链接')
     bilibili_link = models.CharField(max_length=255, null=True, blank=True, verbose_name='Bilibili链接')
-    view_time = models.BigIntegerField(default=0, verbose_name='博客被访问的次数')
+    view_time = models.BigIntegerField(default=0, null=True, verbose_name='博客被访问的次数')
     createdAt = models.DateTimeField(null=True, blank=True, verbose_name='创建时间')
     updatedAt = models.DateTimeField(null=True, blank=True, verbose_name='更新时间')
     we_chat_group = models.CharField(max_length=255, null=True, blank=True, verbose_name='微信群图片')

@@ -21,7 +21,7 @@ export const blogTimelineGetArticleList = (current, size) => {
 /** 根据标签id获取该标签下的文章*/
 export const getArticleListByTagId = (params) => {
   return new Promise((resolve, reject) => {
-    http.post("/api/article/getArticleListByTagId", params).then((res) => {
+    http.post("/api/article/getArticleListByTagId/", params).then((res) => {
       resolve(res);
     });
   });
@@ -30,7 +30,7 @@ export const getArticleListByTagId = (params) => {
 /** 根据分类id获取该标签下的文章*/
 export const getArticleListByCategoryId = (params) => {
   return new Promise((resolve, reject) => {
-    http.post("/api/article/getArticleListByCategoryId", params).then((res) => {
+    http.post("/api/article/getArticleListByCategoryId/", params).then((res) => {
       resolve(res);
     });
   });
@@ -57,7 +57,7 @@ export const getArticleById = (id) => {
 /** 获取热门文章*/
 export const getHotArticle = () => {
   return new Promise((resolve, reject) => {
-    http.get("/api/article/getHotArticle", {}).then((res) => {
+    http.get("/api/article/getHotArticle/", {}).then((res) => {
       resolve(res);
     });
   });
@@ -75,7 +75,7 @@ export const getArticleByContent = (content) => {
 /** 文章增加阅读时长 */
 export const readingDuration = (id, duration) => {
   return new Promise((resolve, reject) => {
-    http.put(`/api/article/addReadingDuration/${id}/${duration}`, {}).then((res) => {
+    http.put(`/api/article/addReadingDuration/${id}/${duration}/`, {}).then((res) => {
       resolve(res);
     });
   });

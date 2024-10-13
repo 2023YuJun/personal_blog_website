@@ -7,7 +7,7 @@ import { imageConversion } from "@/utils/tool";
 /** 登录 */
 export const reqLogin = (data) => {
   return new Promise((resolve, reject) => {
-    http.post("/api/user/login", data).then((res) => {
+    http.post("/api/user/login/", data).then((res) => {
       resolve(res);
     });
   });
@@ -16,7 +16,7 @@ export const reqLogin = (data) => {
 /** 注册 */
 export const reqRegister = (data) => {
   return new Promise((resolve, reject) => {
-    http.post("/api/user/register", data).then((res) => {
+    http.post("/api/user/register/", data).then((res) => {
       resolve(res);
     });
   });
@@ -25,7 +25,7 @@ export const reqRegister = (data) => {
 /** 用户修改个人信息 */
 export const updateUserInfo = (data) => {
   return new Promise((resolve, reject) => {
-    http.put("/api/user/updateOwnUserInfo", data).then((res) => {
+    http.put("/api/user/updateOwnUserInfo/", data).then((res) => {
       resolve(res);
     });
   });
@@ -34,7 +34,7 @@ export const updateUserInfo = (data) => {
 /** 用户修改密码 */
 export const updateUserPassword = (data) => {
   return new Promise((resolve, reject) => {
-    http.put("/api/user/updatePassword", data).then((res) => {
+    http.put("/api/user/updatePassword/", data).then((res) => {
       resolve(res);
     });
   });
@@ -43,7 +43,7 @@ export const updateUserPassword = (data) => {
 /** 获取当前登录人的信息 */
 export const getUserInfoById = (id) => {
   return new Promise((resolve, reject) => {
-    http.get("/api/user/getUserInfoById/" + id, {}).then((res) => {
+    http.get("/api/user/getUserInfoById" + id, {}).then((res) => {
       resolve(res);
     });
   });
@@ -76,7 +76,7 @@ export const imgUpload = async (data) => {
 
   return new Promise((resolve) => {
     http
-      .post("/api/upload/img", formData, {
+      .post("/api/upload/img/", formData, {
         config: {
           headers: {
             "Content-Type": "multipart/form-data",

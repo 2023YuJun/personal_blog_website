@@ -168,6 +168,7 @@ def blog_home_get_article_list(current, size):
         article.category_name = get_category_name_by_id(article.category_id)
         article.tag_name_list = get_tag_list_by_article_id(article.id)
 
+    articles = ArticleSerializer(articles, many=True).data
     return {
         'current': current,
         'size': size,

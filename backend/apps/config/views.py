@@ -7,7 +7,7 @@ from apps.article.article_service import get_article_count
 from apps.category.service import get_category_count
 from apps.tag.service import get_tag_count
 from apps.user.service import get_user_count
-from apps.config.config import *
+from apps.config.service import *
 from utils.minioUpload import minio_upload, delete_minio_imgs
 from utils.result import result, throw_error, ERRORCODE
 
@@ -20,6 +20,8 @@ class ConfigView(APIView):
     def post(self, request, *args, **kwargs):
         if request.path.endswith('/update/'):
             return self.update_config(request)
+        elif request.path.endswith('/img/'):
+            return self.upload(request)
 
     def put(self, request, *args, **kwargs):
         if request.path.endswith('/addView/'):
@@ -35,7 +37,6 @@ class ConfigView(APIView):
         file = request.FILES.get('file')
 
         if file:
-            # 使用 MinIO 上传
             res = minio_upload(file)
             if res:
                 return Response(result("图片上传成功", {'url': res}), status=200)
@@ -56,10 +57,9 @@ class ConfigView(APIView):
             config = get_config()
             request_data = request.data
 
-            for key in ['avatar_bg', 'blog_avatar', 'qq_link', 'we_chat_link', 'we_chat_group', 'qq_group',
-                        'we_chat_pay',
-                        'ali_pay']:
-                if key in request_data and config.get(key) != request_data[key]:
+            for key in ['avatar_bg', 'blog_avatar', 'qq_link', 'we_chat_link',
+                        'we_chat_group', 'qq_group', 'we_chat_pay', 'ali_pay']:
+                if key in request_data and config and config.get(key) != request_data[key]:
                     delete_minio_imgs([config[key].split("/")[-1]])
 
             res = update_config(request_data)
@@ -74,7 +74,7 @@ class ConfigView(APIView):
             if res:
                 return Response(result("获取网站设置成功", res), status=200)
             else:
-                return Response(result("请去博客后台完善博客信息", res), status=400)
+                return Response(result("请去博客后台完善博客信息", res))
         except Exception as err:
             print(err)
             return Response(throw_error(error_code_config, "获取网站设置失败"), status=400)
@@ -85,7 +85,7 @@ class ConfigView(APIView):
             if res == "添加成功":
                 return Response(result("增加访问量成功", res), status=200)
             elif res == "需要初始化":
-                return Response(result("请先初始化网站信息", res), status=204)
+                return Response(result("请先初始化网站信息", res), status=200)
         except Exception as err:
             print(err)
             return Response(throw_error(error_code_config, "增加网站访问量失败"), status=400)

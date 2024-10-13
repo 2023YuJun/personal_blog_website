@@ -1,6 +1,5 @@
 import random
 import string
-
 from django.conf import settings
 from minio import Minio
 
@@ -14,68 +13,85 @@ MINIO_PORT = settings.MINIO_PORT or 9000
 minio_client = None
 
 
-if MINIO_PATH and MINIO_ACCESSKEY and MINIO_SECRETKEY:
-    try:
-        minio_client = Minio(
-            MINIO_PATH,
-            access_key=MINIO_ACCESSKEY,
-            secret_key=MINIO_SECRETKEY,
-            secure=False
-        )
-    except Exception as err:
-        print(err)
-else:
-    print("请在settings中完善minio配置项")
+def get_minio_client():
+    global minio_client
+    if not minio_client:
+        if MINIO_PATH and MINIO_ACCESSKEY and MINIO_SECRETKEY:
+            try:
+                end_point = f"{MINIO_PATH}:{MINIO_PORT}"
+                minio_client = Minio(
+                    end_point,
+                    access_key=MINIO_ACCESSKEY,
+                    secret_key=MINIO_SECRETKEY,
+                    secure=False
+                )
+            except Exception as err:
+                print(f"Minio client 初始化失败: {err}")
+                raise err
+        else:
+            raise ValueError("请在 settings 中完善 Minio 配置项")
+    return minio_client
 
 
 # 生成随机文件名
 def generate_random_file_name(length=12):
-    chars = string.ascii_letters  # 包含所有英文字母及其大写形式
+    chars = string.ascii_letters
     return ''.join(random.choice(chars) for _ in range(length))
 
 
-async def bucket_exists():
-    # 判断 bucket 是否存在
+# 判断 bucket 是否存在
+def bucket_exists():
     try:
-        return minio_client.bucket_exists(MINIO_BUCKET)
+        client = get_minio_client()
+        return client.bucket_exists(MINIO_BUCKET)
     except Exception as err:
-        print(err)
+        print(f"Bucket 检查失败: {err}")
         return False
 
 
-async def upload(file_path):
+# 上传文件
+def upload(file):
     meta_data = {
-        "Content-Type": "application/octet-stream",
-        "X-Amz-Meta-Testing": 1234,
-        "example": 5678,
+        "Content-Type": file.content_type,
+        "X-Amz-Meta-Testing": "1234",
+        "example": "5678",
     }
 
     file_name = generate_random_file_name()
 
     try:
-        minio_client.fput_object(MINIO_BUCKET, file_name, file_path, meta_data)
+        client = get_minio_client()
+        client.put_object(
+            bucket_name=MINIO_BUCKET,
+            object_name=file_name,
+            data=file.file,
+            length=file.size,
+            content_type=file.content_type,
+            metadata=meta_data
+        )
         return f"/blog-images/{file_name}"
     except Exception as err:
-        print(err)
+        print(f"文件上传失败: {err}")
         return False
 
 
 def delete_minio_imgs(img_list):
-    for img in img_list:
-        try:
-            minio_client.remove_object(MINIO_BUCKET, img)
-        except Exception as err:
-            print(err)
-
-
-async def minio_upload(file_path):
     try:
-        exist = await bucket_exists()
-        if not exist:
-            print("bucket不存在")
-            return
+        client = get_minio_client()
+        for img in img_list:
+            client.remove_object(MINIO_BUCKET, img)
+    except Exception as err:
+        print(f"删除图片失败: {err}")
 
-        url = await upload(file_path)
+
+def minio_upload(file):
+    try:
+        if not bucket_exists():
+            print("Bucket 不存在")
+            return False
+
+        url = upload(file)
         return url if url else False
     except Exception as err:
-        print(err)
+        print(f"Minio 上传失败: {err}")
+        return False

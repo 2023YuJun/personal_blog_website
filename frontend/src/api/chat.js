@@ -12,7 +12,7 @@ export const getChatList = (data) => {
 /** 清空聊天记录 */
 export const clearChat = (data) => {
   return new Promise((resolve, reject) => {
-    http.post("/api/chat/delete", data).then((res) => {
+    http.post("/api/chat/delete/", data).then((res) => {
       resolve(res);
     });
   });

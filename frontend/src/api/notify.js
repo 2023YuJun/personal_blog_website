@@ -3,7 +3,7 @@ import http from "@/config/request";
 /** 分页获取消息列表 */
 export const getNotifylist = (data) => {
   return new Promise((resolve, reject) => {
-    http.post("/api/notify/getNotifyList", data).then((res) => {
+    http.post("/api/notify/getNotifyList/", data).then((res) => {
       resolve(res);
     });
   });

@@ -193,7 +193,7 @@ onMounted(() => {
       </div>
       <div class="tip">
         背景管理用于博客前台管理每个页面的头部背景图 <br />
-        路由名称就是当前页面的route.name,背景列表是维护在这个页面的routerList.js里的,需要添加路由自己行在js里添加
+        路由名称就是当前页面的route.name,背景列表是维护在这个页面的routerList.js里的,需要添加路由自己在js里添加
       </div>
     </template>
     <el-row class="page-header">

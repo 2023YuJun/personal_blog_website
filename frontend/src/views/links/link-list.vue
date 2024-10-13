@@ -132,7 +132,7 @@ onBeforeUnmount(() => {
             class="!cursor-pointer">http://mrzym.top/</span>
         </el-descriptions-item>
         <el-descriptions-item label="QQ">
-          <span v-copy="'2715158815'" class="!cursor-pointer">2715158815</span>
+          <span v-copy="'2690931889'" class="!cursor-pointer">2690931889</span>
         </el-descriptions-item>
         <el-descriptions-item>
           <span class="desc-remark" style="text-shadow: none">
