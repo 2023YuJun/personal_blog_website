@@ -12,71 +12,63 @@ error_code = ERRORCODE['ARTICLE']
 class ArticleView(APIView):
 
     def post(self, request, *args, **kwargs):
-        if request.path.endswith('/add/'):
+        if '/add/' in request.path:
             return self.create_article(request)
-        elif request.path.endswith('/titleExist/'):
+        elif '/titleExist/' in request.path:
             return self.get_article_info_by_title(request)
-        elif request.path.endswith('/getArticleList/'):
+        elif '/getArticleList/' in request.path:
             return self.get_article_list(request)
-        elif request.path.endswith('/getArticleListByTagId/'):
+        elif '/getArticleListByTagId/' in request.path:
             return self.get_article_list_by_tag_id(request)
-        elif request.path.endswith('/getArticleListByCategoryId/'):
+        elif '/getArticleListByCategoryId/' in request.path:
             return self.get_article_list_by_category_id(request)
-        elif request.path.endswith('/updateUrl/'):
+        elif '/updateUrl/' in request.path:
             return update_url()
 
     def put(self, request, *args, **kwargs):
-        if request.path.endswith('/update/'):
+        id = kwargs.get('id')
+        is_top = kwargs.get('is_top')
+        status = kwargs.get('status')
+        duration = kwargs.get('duration')
+        if '/update/' in request.path:
             return self.update_article(request)
-        elif request.path.endswith('/updateTop/'):
-            id = kwargs.get('id')
-            is_top = kwargs.get('is_top')
+        elif '/updateTop/' in request.path:
             return self.update_top(request, id, is_top)
-        elif request.path.endswith('/revert/'):
-            id = kwargs.get('id')
+        elif '/revert/' in request.path:
             return self.revert_article(request, id)
-        elif request.path.endswith('/isPublic/'):
-            id = kwargs.get('id')
-            status = kwargs.get('status')
+        elif '/isPublic/' in request.path:
             return self.toggle_article_public(request, id, status)
-        elif request.path.endswith('/like/'):
-            id = kwargs.get('id')
+        elif '/like/' in request.path:
             return self.article_like(request, id)
-        elif request.path.endswith('/cancelLike/'):
-            id = kwargs.get('id')
+        elif '/cancelLike/' in request.path:
             return self.cancel_article_like(request, id)
-        elif request.path.endswith('/addReadingDuration/'):
-            id = kwargs.get('id')
-            duration = kwargs.get('duration')
+        elif '/addReadingDuration/' in request.path:
             return self.add_reading_duration(request, id, duration)
 
     def get(self, request, *args, **kwargs):
-        if request.path.endswith('/add/'):
+        id = kwargs.get('id')
+        current = kwargs.get('current')
+        size = kwargs.get('size')
+        if '/add/' in request.path:
             return self.create_article(request)
-        elif request.path.endswith('/blogHomeGetArticleList/'):
-            current = kwargs.get('current')
-            size = kwargs.get('size')
+        elif '/blogHomeGetArticleList/' in request.path:
             return self.blog_home_get_article_list(request, current, size)
-        elif request.path.endswith('/blogTimelineGetArticleList/'):
-            current = kwargs.get('current')
-            size = kwargs.get('size')
+        elif '/blogTimelineGetArticleList/' in request.path:
             return self.blog_timeline_get_article_list(request, current, size)
-        elif request.path.endswith('/getRecommendArticleById/'):
-            id = kwargs.get('id')
+        elif '/getRecommendArticleById/' in request.path:
             return self.get_recommend_article_by_id(request, id)
-        elif request.path.endswith('/getArticleListByContent/'):
+        elif '/getArticleListByContent/' in request.path:
             content = kwargs.get('content')
             return self.get_article_list_by_content(request, content)
-        elif request.path.endswith('/getHotArticle/'):
+        elif '/getHotArticle/' in request.path:
             return self.get_hot_article(request)
-        elif request.path.endswith('/getArticleById/'):
-            id = kwargs.get('id')
+        elif '/getArticleById/' in request.path:
             return self.get_article_by_id(request, id)
 
     def delete(self, request, *args, **kwargs):
-        if request.path.endswith('/delete/'):
-            id = kwargs.get('id')
-            status = kwargs.get('status')
+        id = kwargs.get('id')
+        status = kwargs.get('status')
+        if '/delete/' in request.path:
             return self.delete_article(request, id, status)
 
     def create_article(self, request):
@@ -109,8 +101,8 @@ class ArticleView(APIView):
                 verify_article_param(request)
                 update_judge_title_exist(request)
                 data = request.json()
-                tag_list = data.pop("tagList")
-                category = data.pop("category")
+                tag_list = data.get("tagList")
+                category = data.get("category")
                 old_cover = get_article_cover_by_id(data["id"])
 
                 # 删除旧封面图片的逻辑
@@ -121,10 +113,13 @@ class ArticleView(APIView):
                 data["category_id"] = create_category_or_return(category["id"], category["category_name"])
                 new_article_tag_list = create_article_tag_by_article_id(data["id"], tag_list)
                 res = update_article(data)
-                return Response(result("修改文章成功", {
-                    "res": res,
-                    "newArticleTagList": new_article_tag_list,
-                }), status=status.HTTP_200_OK)
+                if res:
+                    return Response(result("修改文章成功", {
+                        "res": res,
+                        "newArticleTagList": new_article_tag_list,
+                    }), status=status.HTTP_200_OK)
+                else:
+                    return Response(throw_error(error_code, "修改文章失败"), status=status.HTTP_400_BAD_REQUEST)
             except Exception as err:
                 print(err)
                 return Response(throw_error(error_code, "修改文章失败"), status=status.HTTP_400_BAD_REQUEST)

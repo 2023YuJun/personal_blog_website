@@ -1,11 +1,24 @@
-from apps.photo.models import Photo  # 根据你的项目结构调整导入路径
+from django.db import transaction
+from django.utils import timezone
+
+from .serializers import *
 
 
 def add_photos(photo_list):
     """
     批量新增图片
     """
-    res = Photo.objects.bulk_create([Photo(**photo) for photo in photo_list])
+    current_time = timezone.localtime()
+    photos_to_create = []
+
+    for photo in photo_list:
+        photo['createdAt'] = current_time
+        photo['updatedAt'] = current_time
+        photos_to_create.append(Photo(**photo))
+
+    with transaction.atomic():
+        res = Photo.objects.bulk_create(photos_to_create)
+
     return res
 
 
@@ -14,7 +27,8 @@ def delete_photos(id_list, type):
     批量删除图片
     """
     if int(type) == 1:
-        res = Photo.objects.filter(id__in=id_list).update(status=2)
+        current_time = timezone.localtime()
+        res = Photo.objects.filter(id__in=id_list).update(status=2, updatedAt=current_time)
     else:
         res = Photo.objects.filter(id__in=id_list).delete()
 
@@ -25,7 +39,8 @@ def revert_photos(id_list):
     """
     批量恢复图片
     """
-    res = Photo.objects.filter(id__in=id_list).update(status=1)
+    current_time = timezone.localtime()
+    res = Photo.objects.filter(id__in=id_list).update(status=1, updatedAt=current_time)
     return res
 
 
@@ -38,6 +53,7 @@ def get_photos_by_album_id(current, size, album_id, status):
 
     rows = Photo.objects.filter(album_id=album_id, status=status)[offset:offset + limit]
     total_count = Photo.objects.filter(album_id=album_id, status=status).count()
+    rows = PhotoSerializer(rows, many=True).data
 
     return {
         "current": current,

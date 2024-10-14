@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from apps.links.links import *
+from apps.links.service import *
 from ..notify.views import NotifyView
 from utils.result import throw_error, result, ERRORCODE
 
@@ -10,19 +10,17 @@ error_code = ERRORCODE['LINKS']
 
 class LinksView(APIView):
     def post(self, request, *args, **kwargs):
-        if request.path.endswith('/add/'):
+        if 'add' in request.path or 'backUpdate' in request.path:
             return self.add_or_update_links(request)
-        elif request.path.endswith('/frontUpdate/'):
+        elif 'frontUpdate' in request.path:
             return self.front_update_links(request)
-        elif request.path.endswith('/backUpdate/'):
-            return self.add_or_update_links(request)
-        elif request.path.endswith('/getLinksList/'):
+        elif 'getLinksList' in request.path:
             return self.get_links_list(request)
 
     def put(self, request, *args, **kwargs):
-        if request.path.endswith('/delete/'):
+        if 'delete' in request.path:
             return self.delete_links(request)
-        elif request.path.endswith('/approve/'):
+        elif 'approve' in request.path:
             return self.approve_links(request)
 
     def add_or_update_links(self, request):

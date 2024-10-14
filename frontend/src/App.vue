@@ -43,9 +43,6 @@ const getAllPageHeaderBg = async () => {
 const welcome = () => {
   // 欢迎
   let msg = getWelcomeSay(getUserInfo.value.nick_name);
-  if (getUserInfo.value.id == 3) {
-    msg = "小婷光临，真是三生有幸";
-  }
   ElNotification({
     offset: 60,
     title: "欢迎～",
@@ -72,17 +69,8 @@ onMounted(async () => {
 <template>
   <div class="app">
     <router-view></router-view>
-    <BackTop
-      v-if="route.path !== '/'"
-      :right="backTopProps.right"
-      :svgWidth="backTopProps.svgWidth"
-      :rotateDeg="-42"
-    />
-    <i
-      v-if="!isPc && ['home', '/'].includes(route.path)"
-      class="iconfont icon-fanhui"
-      @click="goBack"
-    ></i>
+    <BackTop v-if="route.path !== '/'" :right="backTopProps.right" :svgWidth="backTopProps.svgWidth" :rotateDeg="-42" />
+    <i v-if="!isPc && ['home', '/'].includes(route.path)" class="iconfont icon-fanhui" @click="goBack"></i>
     <MusicPlayer />
     <ChatRoom :isPc="isPc" v-if="route.path !== '/'" />
   </div>

@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from apps.photo.photo import *
+from apps.photo.photo_service import *
 from utils.minioUpload import delete_minio_imgs
 from utils.result import result, ERRORCODE, throw_error
 
@@ -10,20 +10,20 @@ error_code = ERRORCODE['PHOTO']
 
 class PhotoView(APIView):
     def post(self, request, *args, **kwargs):
-        if request.path.endswith('/add/'):
+        if 'add' in request.path:
             return self.add_photos(request)
-        elif request.path.endswith('/getPhotoListByAlbumId/'):
+        elif 'getPhotoListByAlbumId' in request.path:
             return self.get_photos_by_album_id(request)
 
     def put(self, request, *args, **kwargs):
-        if request.path.endswith('/delete/'):
+        if 'delete' in request.path:
             return self.delete_photos(request)
-        elif request.path.endswith('/revert/'):
+        elif 'revert' in request.path:
             return self.revert_photos(request)
 
     def get(self, request, *args, **kwargs):
-        if request.path.endswith('/getAllPhotosByAlbumId/'):
-            id = kwargs.get('id')
+        id = kwargs.get('id')
+        if 'getAllPhotosByAlbumId' in request.path:
             return self.get_all_photos_by_album_id(request, id)
 
     def add_photos(self, request):

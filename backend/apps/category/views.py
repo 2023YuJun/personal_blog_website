@@ -12,20 +12,19 @@ class CategoryView(APIView):
     """
 
     def post(self, request, *args, **kwargs):
-        if request.path.endswith('/add/'):
+        if 'add' in request.path:
             return self.add_category(request)
-        elif request.path.endswith('/delete/'):
+        elif 'delete' in request.path:
             return self.delete_categories(request)
-        elif request.path.endswith('/getCategoryList/'):
+        elif 'getCategoryList' in request.path:
             return self.get_category_list(request)
-        return Response({"error": "不支持的请求方式"}, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, *args, **kwargs):
-        if request.path.endswith('/update/'):
+        if 'update' in request.path:
             return self.update_category(request)
 
     def get(self, request, *args, **kwargs):
-        if request.path.endswith('/getCategoryDictionary/'):
+        if 'getCategoryDictionary' in request.path:
             return self.get_category_dictionary(request)
 
     def add_category(self, request):

@@ -1,5 +1,7 @@
-from apps.links.models import Links  # 根据你的项目结构调整导入路径
 from django.db.models import Q
+from django.utils import timezone
+from django.db import transaction
+from .serializers import *
 
 
 def add_or_update_links(link_data):
@@ -7,11 +9,17 @@ def add_or_update_links(link_data):
     新增/编辑友链
     """
     id = link_data.get('id')
-    if id:
-        Links.objects.filter(id=id).update(**link_data)
-    else:
-        link_data['status'] = 1  # 默认状态
-        Links.objects.create(**link_data)
+    current_time = timezone.localtime()
+
+    with transaction.atomic():
+        if id:
+            link_data['updatedAt'] = current_time
+            Links.objects.filter(id=id).update(**link_data)
+        else:
+            link_data['status'] = 1  # 默认状态
+            link_data['createdAt'] = current_time
+            link_data['updatedAt'] = current_time
+            Links.objects.create(**link_data)
 
     return True
 
@@ -48,7 +56,7 @@ def get_links_list(current, size, time=None, status=None, site_name=None):
 
     total_count = Links.objects.filter(where_opt).count()
     rows = Links.objects.filter(where_opt).order_by("createdAt")[offset:offset + size]
-
+    rows = LinksSerializer(rows, many=True).data
     return {
         'current': current,
         'size': size,

@@ -6,7 +6,7 @@ from django.conf import settings
 from apps.user.service import *
 from utils.tool import get_ip_address
 from utils.minioUpload import delete_minio_imgs
-
+from django.forms.models import model_to_dict
 error_code = ERRORCODE['USER']
 
 
@@ -14,29 +14,26 @@ class UserView(APIView):
     """用户控制器"""
 
     def post(self, request, *args, **kwargs):
-        if request.path.endswith('/register/'):
+        if 'register' in request.path:
             return self.register(request)
-        elif request.path.endswith('/login/'):
+        elif 'login' in request.path:
             return self.login(request)
-        elif request.path.endswith('/getUserList/'):
+        elif 'getUserList' in request.path:
             return self.get_user_list(request)
 
     def put(self, request, *args, **kwargs):
-        if request.path.endswith('/updateOwnUserInfo/'):
+        if 'updateOwnUserInfo' in request.path:
             return self.update_own_user_info(request)
-        elif request.path.endswith('/updatePassword/'):
+        elif 'updatePassword' in request.path:
             return self.update_password(request)
-        elif request.path.endswith('/updateRole/'):
-            id = kwargs.get('id')
-            role = kwargs.get('role')
-            return self.update_role(request, id, role)
-        elif request.path.endswith('/adminUpdateUserInfo/'):
+        elif 'updateRole' in request.path:
+            return self.update_role(request, kwargs.get('id'), kwargs.get('role'))
+        elif 'adminUpdateUserInfo' in request.path:
             return self.admin_update_user_info(request)
 
     def get(self, request, *args, **kwargs):
-        if request.path.endswith('/getUserInfoById/'):
-            id = kwargs.get('id')
-            return self.get_user_info(request, id)
+        if 'getUserInfoById' in request.path:
+            return self.get_user_info(request, kwargs.get('id'))
 
     def register(self, request):
         """用户注册"""
@@ -59,33 +56,38 @@ class UserView(APIView):
         try:
             username = request.data.get("username")
             password = request.data.get("password")
-            validate_username_password(username, password)
-            verify_login_credentials(username, password)
-            if username == "admin":
-                if password == settings.ADMIN_PASSWORD:
-                    token = jwt.encode({"nick_name": "超级管理员", "id": 5201314, "role": 1, "username": "admin"},
-                                       settings.JWT_SECRET, algorithm="HS256")
-                    return JsonResponse(result("超级管理员登录成功",
-                                               {"token": token, "username": "超级管理员", "role": 1, "id": 5201314}))
+            response = validate_username_password(username, password)
+            if response is None:
+                response = verify_login_credentials(username, password)
+                if response is None:
+                    if username == "admin":
+                        if password == settings.ADMIN_PASSWORD:
+                            token = jwt.encode({"nick_name": "超级管理员", "id": 5201314, "role": 1, "username": "admin"},
+                                               settings.JWT_SECRET, algorithm="HS256")
+                            return JsonResponse(result("超级管理员登录成功",
+                                                       {"token": token, "username": "超级管理员", "role": 1, "id": 5201314}))
+                        else:
+                            return JsonResponse(throw_error(error_code, "密码错误"), status=400)
+                    else:
+                        res = get_one_user_info({"username": username})
+                        ip = request.META.get("HTTP_X_REAL_IP") or request.META.get("HTTP_X_FORWARDED_FOR") or request.META.get(
+                            "REMOTE_ADDR")
+                        update_ip(res.id, ip.split(":")[-1])
+                        ip_address = get_ip_address()
+                        payload = {
+                            "id": res.id,
+                            "username": res.username,
+                            "role": res.role,
+                            "nick_name": res.nick_name
+                        }
+                        token = jwt.encode(payload, settings.JWT_SECRET, algorithm="HS256")
+                        return JsonResponse(result("用户登录成功",
+                                                   {"token": token, "username": res.username, "role": res.role, "id": res.id,
+                                                    "ipAddress": ip_address}), status=200)
                 else:
-                    return JsonResponse(throw_error(error_code, "密码错误"), status=400)
+                    return response
             else:
-                res = get_one_user_info({"username": username})
-                ip = request.META.get("HTTP_X_REAL_IP") or request.META.get("HTTP_X_FORWARDED_FOR") or request.META.get(
-                    "REMOTE_ADDR")
-                update_ip(res.id, ip.split(":")[-1])
-                ip_address = get_ip_address()
-                payload = {
-                    "id": res.id,
-                    "username": res.username,
-                    "role": res.role,
-                    "nick_name": res.nick_name
-                }
-                token = jwt.encode(payload, settings.JWT_SECRET, algorithm="HS256")
-                return JsonResponse(result("用户登录成功",
-                                           {"token": token, "username": res.username, "role": res.role, "id": res.id,
-                                            "ipAddress": ip_address}))
-
+                return response
         except Exception as err:
             print(err)
             return JsonResponse(throw_error(error_code, "用户登陆失败"), status=500)
@@ -152,9 +154,13 @@ class UserView(APIView):
             else:
                 res = get_one_user_info({"id": id})
                 ip_address = get_ip_address()
-                res_info = {key: value for key, value in res.items() if key not in ["password", "username", "ip"]}
-                res_info["ipAddress"] = ip_address
-                return Response(result("获取用户信息成功", res_info))
+                if res:
+                    # 将模型实例转换为字典
+                    res_info = model_to_dict(res, exclude=["password", "username", "ip"])
+                    res_info["ipAddress"] = ip_address
+                    return Response(result("获取用户信息成功", res_info), status=200)
+                else:
+                    return Response(throw_error(error_code, "用户不存在"), status=404)
         except Exception as err:
             print(err)
             return Response(throw_error(error_code, "获取用户信息失败"), status=500)

@@ -76,9 +76,6 @@ const registerRules = {
 const welcome = (id, nick_name) => {
   // 欢迎
   let msg = getWelcomeSay(nick_name);
-  if (id == 3) {
-    msg = "小婷光临，真是三生有幸";
-  }
   ElNotification({
     offset: 60,
     title: "欢迎～",
@@ -168,14 +165,14 @@ const onLogin = async (form, type = "login") => {
       ElNotification({
         offset: 60,
         title: "错误提示",
-        message: h("div", { style: "color: #f56c6c; font-weight: 600;" }, res.message),
+        message: h("div", { style: "color: #f56c6c; font-weight: 600;" }, userRes.message || "获取用户信息失败"),
       });
     }
   } else {
     ElNotification({
       offset: 60,
       title: "错误提示",
-      message: h("div", { style: "color: #f56c6c; font-weight: 600;" }, res.message),
+      message: h("div", { style: "color: #f56c6c; font-weight: 600;" }, res.message || "登录失败"),
     });
   }
 };
@@ -252,33 +249,17 @@ watch(
           已有账号？<span class="line" @click="toLogin">去登录</span>
         </div>
       </div>
-      <el-form
-        v-if="isLogin"
-        class="login-register-form"
-        ref="loginFormRef"
-        :model="loginForm"
-        :rules="loginRules"
-      >
+      <el-form v-if="isLogin" class="login-register-form" ref="loginFormRef" :model="loginForm" :rules="loginRules">
         <div class="!w-[100%] !h-[6rem]">
           <el-image style="width: 80px; height: 80px" :src="blogAvatar" fit="cover" />
         </div>
         <el-form-item prop="username">
-          <el-input
-            v-model="loginForm.username"
-            :style="{ width: '100%' }"
-            placeholder="请输入用户名"
-            clearable
-            @keyup.enter="submit"
-          />
+          <el-input v-model="loginForm.username" :style="{ width: '100%' }" placeholder="请输入用户名" clearable
+            @keyup.enter="submit" />
         </el-form-item>
         <el-form-item prop="password" @keyup.enter="submit">
-          <el-input
-            v-model="loginForm.password"
-            show-password
-            :style="{ width: '100%' }"
-            placeholder="请输入密码"
-            clearable
-          />
+          <el-input v-model="loginForm.password" show-password :style="{ width: '100%' }" placeholder="请输入密码"
+            clearable />
         </el-form-item>
         <el-form-item class="remember-me">
           <div class="flex justify-between items-center w-[100%]">
@@ -287,47 +268,20 @@ watch(
           </div>
         </el-form-item>
       </el-form>
-      <el-form
-        v-else
-        class="login-register-form"
-        ref="registerFormRef"
-        :model="registerForm"
-        :rules="registerRules"
-      >
+      <el-form v-else class="login-register-form" ref="registerFormRef" :model="registerForm" :rules="registerRules">
         <el-form-item prop="username">
-          <el-input
-            v-model="registerForm.username"
-            :style="{ width: '100%' }"
-            placeholder="请输入用户名"
-            clearable
-          />
+          <el-input v-model="registerForm.username" :style="{ width: '100%' }" placeholder="请输入用户名" clearable />
         </el-form-item>
         <el-form-item>
-          <el-input
-            v-model="registerForm.nick_name"
-            :style="{ width: '199%' }"
-            placeholder="请输入昵称"
-            clearable
-          />
+          <el-input v-model="registerForm.nick_name" :style="{ width: '199%' }" placeholder="请输入昵称" clearable />
         </el-form-item>
         <el-form-item prop="password1">
-          <el-input
-            show-password
-            v-model="registerForm.password1"
-            :style="{ width: '100%' }"
-            placeholder="请输入密码"
-            clearable
-          />
+          <el-input show-password v-model="registerForm.password1" :style="{ width: '100%' }" placeholder="请输入密码"
+            clearable />
         </el-form-item>
         <el-form-item prop="password2">
-          <el-input
-            show-password
-            v-model="registerForm.password2"
-            :style="{ width: '100%' }"
-            placeholder="确认密码"
-            clearable
-            @keyup.enter="submit"
-          />
+          <el-input show-password v-model="registerForm.password2" :style="{ width: '100%' }" placeholder="确认密码"
+            clearable @keyup.enter="submit" />
         </el-form-item>
       </el-form>
       <div v-if="isLogin" class="flex justify-between items-center w-[100%] mb-3">
@@ -346,14 +300,17 @@ watch(
     width: 100%;
   }
 }
+
 .apply-button {
   width: 100%;
   text-align: center;
 }
+
 .line {
   cursor: pointer;
   text-decoration: underline;
 }
+
 .no-account {
   font-size: 1rem;
 }

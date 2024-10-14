@@ -86,12 +86,17 @@ const getAllTags = async () => {
 // 计算出网站运行天数
 const calcRuntimeDays = (time) => {
   if (time) {
-    // eslint-disable-next-line
-    time = time.replace(/\-/g, "/"); // 解决ios系统上格式化时间出现NAN的bug
+    // 将时间中的 '/' 替换为 '-' 以符合 ISO 标准
+    time = time.replace(/\//g, "-");
     const now = new Date().getTime();
     const created = new Date(time).getTime();
-    const days = Math.floor((now - created) / 8.64e7);
-    runtime.value = days;
+    // 检查是否为有效日期
+    if (!isNaN(created)) {
+      const days = Math.floor((now - created) / 8.64e7);  // 计算天数
+      runtime.value = days;
+    } else {
+      console.error("Invalid time format:", time);  // 打印错误信息
+    }
   }
 };
 
@@ -122,10 +127,7 @@ onMounted(async () => {
   <div class="home_center_box">
     <el-row>
       <el-col :xs="24" :sm="18">
-        <el-card
-          class="mobile-top-card mobile-card info-card animate__animated animate__fadeIn"
-          shadow="hover"
-        >
+        <el-card class="mobile-top-card mobile-card info-card animate__animated animate__fadeIn" shadow="hover">
           <el-skeleton :loading="rightSizeLoading" animated>
             <template #template>
               <MobileTopSkeleton />
@@ -136,16 +138,11 @@ onMounted(async () => {
           </el-skeleton>
         </el-card>
         <!-- 博客文章 -->
-        <HomeArticleList
-          :articleList="articleList"
-          :param="param"
-          :articleTotal="articleTotal"
-          @pageChange="pagination"
-        ></HomeArticleList>
-        <el-card
-          class="mobile-bottom-card card-hover mobile-card info-card animate__animated animate__fadeIn"
-          shadow="hover"
-        >
+        <HomeArticleList :articleList="articleList" :param="param" :articleTotal="articleTotal"
+          @pageChange="pagination">
+        </HomeArticleList>
+        <el-card class="mobile-bottom-card card-hover mobile-card info-card animate__animated animate__fadeIn"
+          shadow="hover">
           <el-skeleton :loading="rightSizeLoading" animated>
             <template #template>
               <RightSideSkeletonItem />
@@ -169,14 +166,8 @@ onMounted(async () => {
                     交流群
                     <div class="flex justify-end items-start flex-nowrap">
                       <div v-image="configDetail.qq_group">
-                        <el-image
-                          class="img !ml-[10px]"
-                          :src="configDetail.qq_group"
-                          fit="cover"
-                          :preview-src-list="[configDetail.qq_group]"
-                          preview-teleported
-                          lazy
-                        >
+                        <el-image class="img !ml-[10px]" :src="configDetail.qq_group" fit="cover"
+                          :preview-src-list="[configDetail.qq_group]" preview-teleported lazy>
                           <template #error>
                             <div class="w-[100%] h-[100%] grid place-items-center">
                               <svg-icon name="image404" :width="4" :height="4"></svg-icon>
@@ -185,14 +176,8 @@ onMounted(async () => {
                         </el-image>
                       </div>
                       <div v-image="configDetail.we_chat_group">
-                        <el-image
-                          class="img"
-                          :src="configDetail.we_chat_group"
-                          fit="cover"
-                          :preview-src-list="[configDetail.we_chat_group]"
-                          preview-teleported
-                          lazy
-                        >
+                        <el-image class="img" :src="configDetail.we_chat_group" fit="cover"
+                          :preview-src-list="[configDetail.we_chat_group]" preview-teleported lazy>
                           <template #error>
                             <div class="w-[100%] h-[100%] grid place-items-center">
                               <svg-icon name="image404" :width="4" :height="4"></svg-icon>
@@ -247,12 +232,7 @@ onMounted(async () => {
       </el-col>
       <el-col :xs="0" :sm="6">
         <!-- 博客我的信息 -->
-        <RightSide
-          :configDetail="configDetail"
-          :tags="tags"
-          :runtime="runtime"
-          :loading="rightSizeLoading"
-        />
+        <RightSide :configDetail="configDetail" :tags="tags" :runtime="runtime" :loading="rightSizeLoading" />
       </el-col>
     </el-row>
   </div>
@@ -262,35 +242,45 @@ onMounted(async () => {
 .mobile-top-card {
   height: 31rem;
   margin: 4px;
+
   :deep(.info-avatar) {
     padding: 0 2rem;
   }
+
   :deep(.personal-say) {
     padding-left: 1rem;
   }
+
   :deep(.info-background) {
     height: 12rem;
     width: 100%;
   }
+
   :deep(.common-menu) {
     padding: 1rem 5.5rem;
   }
+
   :deep(.git-ee) {
     padding: 0 4rem;
   }
+
   :deep(.personal-link) {
     padding: 1rem 6rem;
   }
 }
+
 .mobile-bottom-card {
   margin: 4px;
   padding: 1rem;
+
   .icon-localoffer {
     font-weight: 900;
   }
+
   span {
     margin-left: 0.3rem;
   }
+
   .site-info {
     padding: 0.3rem 1rem;
     line-height: 2;
@@ -309,6 +299,7 @@ onMounted(async () => {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+
   .img {
     width: 80px;
     height: 80px;

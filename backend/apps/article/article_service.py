@@ -1,6 +1,7 @@
 from django.db import transaction
 from django.db.models import Q
 from .serializers import *
+from django.utils import timezone
 from apps.article.articleTag_service import delete_article_tag, get_tag_list_by_article_id, get_article_id_list_by_tag_id
 from apps.category.service import get_category_name_by_id
 from apps.user.service import get_author_name_by_id
@@ -26,9 +27,10 @@ def create_article(article_data):
     """
     try:
         with transaction.atomic():
-            article = Article(**article_data)
-            article.save()
-            return article
+            current_time = timezone.localtime()
+            article = Article.objects.create(**article_data, createdAt=current_time, updatedAt=current_time)
+            res = ArticleSerializer(article, many=True).data
+            return res
     except Exception as e:
         print(e)
         return None
@@ -39,16 +41,20 @@ def update_article(article_data):
     修改文章信息
     """
     try:
-        article = Article.objects.get(pk=article_data['id'])
-        for attr, value in article_data.items():
-            setattr(article, attr, value)
-        article.save()
-        return True
+        with transaction.atomic():
+            current_time = timezone.localtime()
+            article = Article.objects.get(pk=article_data['id'])
+            for attr, value in article_data.items():
+                setattr(article, attr, value)
+            article.updatedAt = current_time
+            res = article.save()
+            res = ArticleSerializer(res, many=True).data
+            return res
     except Article.DoesNotExist:
-        return False
+        return None
     except Exception as e:
         print(e)
-        return False
+        return None
 
 
 def update_top(article_id, is_top):
@@ -211,6 +217,7 @@ def get_article_list_by_tag_id(current, size, tag_id):
 
     articles = Article.objects.filter(id__in=tag_id_list, status=1).order_by('-createdAt')[offset:offset + size]
     total_count = Article.objects.filter(id__in=tag_id_list, status=1).count()
+    articles = ArticleSerializer(articles, many=True).data
 
     return {
         'current': current,
@@ -227,6 +234,7 @@ def get_article_list_by_category_id(current, size, category_id):
     offset = (current - 1) * size
     articles = Article.objects.filter(category_id=category_id, status=1).order_by('-createdAt')[offset:offset + size]
     total_count = Article.objects.filter(category_id=category_id, status=1).count()
+    articles = ArticleSerializer(articles, many=True).data
 
     return {
         'current': current,

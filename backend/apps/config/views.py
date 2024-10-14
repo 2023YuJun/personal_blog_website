@@ -18,19 +18,19 @@ error_code = ERRORCODE['STATISTIC']
 
 class ConfigView(APIView):
     def post(self, request, *args, **kwargs):
-        if request.path.endswith('/update/'):
+        if 'update' in request.path:
             return self.update_config(request)
-        elif request.path.endswith('/img/'):
+        elif 'img' in request.path:
             return self.upload(request)
 
     def put(self, request, *args, **kwargs):
-        if request.path.endswith('/addView/'):
+        if 'addView' in request.path:
             return self.add_view_count(request)
 
     def get(self, request, *args, **kwargs):
-        if request.path.endswith('/config/'):
+        if 'config' in request.path:
             return self.get_config(request)
-        elif request.path.endswith('/statistic/'):
+        elif 'statistic' in request.path:
             return self.home_get_statistic(request)
 
     def upload(self, request):

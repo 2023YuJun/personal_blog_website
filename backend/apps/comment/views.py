@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from apps.comment.comment import *
+from apps.comment.service import *
 from utils.result import result, throw_error, ERRORCODE
 from ..notify.views import NotifyView
 from utils.tool import get_current_type_name
@@ -16,35 +16,30 @@ class CommentView(APIView):
     """
 
     def post(self, request, *args, **kwargs):
-        if request.path.endswith('/add/'):
+        if 'add' in request.path:
             return self.create_comment(request)
-        elif request.path.endswith('/apply/'):
+        elif 'apply' in request.path:
             return self.apply_comment(request)
-        elif request.path.endswith('/backGetCommentList/'):
+        elif 'backGetCommentList' in request.path:
             return self.back_get_comment_list(request)
-        elif request.path.endswith('/frontGetParentComment/'):
+        elif 'frontGetParentComment' in request.path:
             return self.front_get_parent_comment(request)
-        elif request.path.endswith('/frontGetChildrenComment/'):
+        elif 'frontGetChildrenComment' in request.path:
             return self.front_get_children_comment(request)
-        elif request.path.endswith('/getCommentTotal/'):
+        elif 'getCommentTotal' in request.path:
             return self.get_comment_total(request)
 
     def put(self, request, *args, **kwargs):
-        if request.path.endswith('/cancelCommentLike/'):
-            id = kwargs.get('id')
+        id = kwargs.get('id')
+        if 'cancelCommentLike' in request.path:
             return self.cancel_comment_like(request, id)
-        elif request.path.endswith('/thumbUp/'):
-            id = kwargs.get('id')
+        elif 'thumbUp' in request.path:
             return self.comment_like(request, id)
 
     def delete(self, request, *args, **kwargs):
-        if request.path.endswith('/delete/'):
-            id = kwargs.get('id')
-            parent_id = kwargs.get('parent_id')
-            return self.delete_comment(request, id, parent_id)
-        if request.path.endswith('/backDelete/'):
-            id = kwargs.get('id')
-            parent_id = kwargs.get('parent_id')
+        id = kwargs.get('id')
+        parent_id = kwargs.get('parent_id')
+        if 'delete' in request.path or 'backDelete' in request.path:
             return self.delete_comment(request, id, parent_id)
 
     def create_comment(self, request):
@@ -55,12 +50,12 @@ class CommentView(APIView):
             request.data['content'] = filter_sensitive(request.data['content'])
 
             res = create_comment({**request.data, 'ip': ip.split(":")[-1]})
-            type = request.data['type']
-            for_id = request.data['for_id']
-            author_id = request.data['author_id']
-            from_name = request.data['from_name']
-            from_id = request.data['from_id']
-            content = request.data['content']
+            type = request.data.get('type', None)
+            for_id = request.data.get('for_id', None)
+            author_id = request.data.get('author_id', None)
+            from_name = request.data.get('from_name', None)
+            from_id = request.data.get('from_id', None)
+            content = request.data.get('content', None)
 
             if from_id != author_id:
                 NotifyView.add_notify({
@@ -83,12 +78,12 @@ class CommentView(APIView):
             request.data['content'] = filter_sensitive(request.data['content'])
 
             res = apply_comment({**request.data, 'ip': ip.split(":")[-1]})
-            type = request.data['type']
-            for_id = request.data['for_id']
-            from_name = request.data['from_name']
-            content = request.data['content']
-            from_id = request.data['from_id']
-            to_id = request.data['to_id']
+            type = request.data.get('type', None)
+            for_id = request.data.get('for_id', None)
+            from_name = request.data.get('from_name', None)
+            content = request.data.get('content', None)
+            from_id = request.data.get('from_id', None)
+            to_id = request.data.get('to_id', None)
 
             if from_id != to_id:
                 NotifyView.add_notify({
@@ -156,25 +151,7 @@ class CommentView(APIView):
     def front_get_parent_comment(self, request):
         """前台条件分页查找父级评论列表"""
         try:
-            ip = request.META.get("HTTP_X_REAL_IP") or request.META.get("HTTP_X_FORWARDED_FOR") or request.META.get(
-                "REMOTE_ADDR")
-            ip = ip.split(":")[-1]
-            current = request.data['current']
-            size = request.data['size']
-            type = request.data['type']
-            for_id = request.data['for_id']
-            user_id = request.data['user_id']
-            order = request.data['order']
-
-            res = front_get_parent_comment({
-                'current': current,
-                'size': size,
-                'type': type,
-                'for_id': for_id,
-                'user_id': user_id,
-                'order': order,
-                'ip': ip
-            })
+            res = front_get_parent_comment(request)
             return Response(result("分页查找评论成功", res), status=status.HTTP_200_OK)
         except Exception as err:
             print(err)
@@ -183,25 +160,8 @@ class CommentView(APIView):
     def front_get_children_comment(self, request):
         """前台条件分页查找子级评论列表"""
         try:
-            ip = request.META.get("HTTP_X_REAL_IP") or request.META.get("HTTP_X_FORWARDED_FOR") or request.META.get(
-                "REMOTE_ADDR")
-            ip = ip.split(":")[-1]
-            current = request.data['current']
-            size = request.data['size']
-            type = request.data['type']
-            for_id = request.data['for_id']
-            user_id = request.data['user_id']
-            parent_id = request.data['parent_id']
 
-            res = front_get_children_comment({
-                'current': current,
-                'size': size,
-                'type': type,
-                'for_id': for_id,
-                'user_id': user_id,
-                'parent_id': parent_id,
-                'ip': ip
-            })
+            res = front_get_children_comment(request)
             return Response(result("分页查找子评论成功", res), status=status.HTTP_200_OK)
         except Exception as err:
             print(err)
@@ -213,7 +173,7 @@ class CommentView(APIView):
             for_id = request.data['for_id']
             type = request.data['type']
 
-            res = get_comment_total({'for_id': for_id, 'type': type})
+            res = get_comment_total(for_id, type)
             return Response(result("获取评论总条数成功", res), status=status.HTTP_200_OK)
         except Exception as err:
             print(err)

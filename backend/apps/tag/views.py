@@ -8,19 +8,19 @@ error_code = ERRORCODE['TAG']
 
 class TagView(APIView):
     def post(self, request, *args, **kwargs):
-        if request.path.endswith('/add/'):
+        if 'add' in request.path:
             return self.add_tag(request)
-        elif request.path.endswith('/delete/'):
+        elif 'delete' in request.path:
             return self.delete_tags(request)
-        elif request.path.endswith('/getTagList/'):
+        elif 'getTagList' in request.path:
             return self.get_tag_list(request)
 
     def put(self, request, *args, **kwargs):
-        if request.path.endswith('/update/'):
+        if 'update' in request.path:
             return self.update_tag(request)
 
     def get(self, request, *args, **kwargs):
-        if request.path.endswith('/getTagDictionary/'):
+        if 'getTagDictionary' in request.path:
             return self.get_tag_dictionary(request)
 
     def add_tag(self, request):

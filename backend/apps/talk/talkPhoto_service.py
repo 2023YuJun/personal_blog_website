@@ -1,5 +1,5 @@
-from apps.talk.models import TalkPhoto
 from utils.minioUpload import delete_minio_imgs
+from .serializers import *
 
 
 def publish_talk_photo(img_list):
@@ -29,6 +29,6 @@ def get_photo_by_talk_id(talk_id):
     根据说说id获取图片列表
     """
     res = TalkPhoto.objects.filter(talk_id=talk_id).values('talk_id', 'url')
-
-    return list(res)  # 直接返回查询结果
+    res = TalkPhotoSerializer(res, many=True).data
+    return res
 

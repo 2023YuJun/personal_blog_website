@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from apps.notify.notify import *
+from apps.notify.service import *
 from utils.result import result, ERRORCODE, throw_error
 
 error_code = ERRORCODE['NOTIFY']
@@ -9,15 +9,14 @@ error_code = ERRORCODE['NOTIFY']
 
 class NotifyView(APIView):
     def post(self, request, *args, **kwargs):
-        if request.path.endswith('/getNotifyList/'):
+        if 'getNotifyList' in request.path:
             return self.get_notify_list(request)
 
     def put(self, request, *args, **kwargs):
-        if request.path.endswith('/update/'):
-            id = kwargs.get('id')
+        id = kwargs.get('id')
+        if 'update' in request.path:
             return self.update_notify(request, id)
-        elif request.path.endswith('/delete/'):
-            id = kwargs.get('id')
+        elif 'delete' in request.path:
             return self.delete_notifys(request, id)
 
     def add_notify(self, request):
@@ -54,7 +53,7 @@ class NotifyView(APIView):
             current = request.data['current']
             size = request.data['size']
             user_id = request.data['userId']
-            res = get_notify_list({'current': current, 'size': size, 'userId': user_id})
+            res = get_notify_list(current, size, user_id)
             return Response(result("分页查找消息通知成功", res), status=status.HTTP_200_OK)
         except Exception as err:
             print(err)

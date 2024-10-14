@@ -192,9 +192,6 @@ def verify_login_credentials(username, password):
         if not check_password(password, res.password):
             return JsonResponse(throw_error(error_code, "密码不匹配"), status=400)
 
-    current_time = timezone.localtime()
-    User.objects.filter(username=username).update(updatedAt=current_time)
-
     return None
 
 

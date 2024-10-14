@@ -1,12 +1,16 @@
-from apps.photo.models import PhotoAlbum
-from apps.photo.photo import delete_photos_by_album_id
+from django.utils import timezone
+
+from apps.photo.photo_service import delete_photos_by_album_id
+from .serializers import *
 
 
 def add_album(album_name, album_cover, description):
     """
     新增相册
     """
-    res = PhotoAlbum.objects.create(album_name=album_name, album_cover=album_cover, description=description)
+    current_time = timezone.localtime()
+    res = PhotoAlbum.objects.create(album_name=album_name, album_cover=album_cover, description=description,
+                                    createdAt=current_time, updatedAt=current_time)
     return res
 
 
@@ -24,8 +28,9 @@ def update_album(id, album_name, album_cover, description):
     """
     编辑相册
     """
+    current_time = timezone.localtime()
     res = PhotoAlbum.objects.filter(id=id).update(album_name=album_name, album_cover=album_cover,
-                                                  description=description)
+                                                  description=description, updatedAt=current_time)
     return res > 0
 
 
@@ -42,6 +47,7 @@ def get_album_list(current, size, album_name=None):
 
     rows = PhotoAlbum.objects.filter(**where_opt)[offset:offset + limit]
     total_count = PhotoAlbum.objects.filter(**where_opt).count()
+    rows = PhotoAlbumSerializer(rows, many=True).data
 
     return {
         "current": current,

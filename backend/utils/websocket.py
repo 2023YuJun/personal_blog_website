@@ -1,7 +1,7 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from apps.user.service import user_service  # 你需要根据你的项目结构调整这个导入
-from apps.chat.chat import chat_service  # 你需要根据你的项目结构调整这个导入
+from apps.chat.service import chat_service  # 你需要根据你的项目结构调整这个导入
 
 online_list = []
 

@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from apps.photo.photoAlbum import *
+from apps.photo.photoAlbum_service import *
 from utils.result import result, ERRORCODE, throw_error
 from utils.minioUpload import delete_minio_imgs
 
@@ -10,22 +10,22 @@ error_code = ERRORCODE['PHOTOALBUM']
 
 class PhotoAlbunView(APIView):
     def post(self, request, *args, **kwargs):
-        if request.path.endswith('/add/'):
+        if 'add' in request.path:
             return self.add_album(request)
-        elif request.path.endswith('/photoAlbum/'):
+        elif 'photoAlbum' in request.path:
             return self.get_album_list(request)
 
     def put(self, request, *args, **kwargs):
-        if request.path.endswith('/update/'):
+        if 'update' in request.path:
             return self.update_album(request)
 
     def get(self, request, *args, **kwargs):
-        if request.path.endswith('/getAllAlbumList/'):
+        if 'getAllAlbumList' in request.path:
             return self.get_all_album_list(request)
 
     def delete(self, request, *args, **kwargs):
-        if request.path.endswith('/delete/'):
-            id = kwargs.get('id')
+        id = kwargs.get('id')
+        if 'delete' in request.path:
             return self.delete_album(id)
 
     def add_album(self, request):

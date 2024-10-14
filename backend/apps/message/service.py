@@ -1,7 +1,7 @@
 from apps.message.models import Message
 from apps.user.service import get_one_user_info
-from apps.like.like import get_is_like_by_ip_and_type, get_is_like_by_id_and_type
-from apps.comment.comment import get_comment_total
+from apps.like.service import get_is_like_by_ip_and_type, get_is_like_by_id_and_type
+from apps.comment.service import get_comment_total
 from django.db.models import Q
 
 

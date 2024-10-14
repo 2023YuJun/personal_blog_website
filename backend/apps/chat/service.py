@@ -1,16 +1,20 @@
 from apps.chat.models import Chat
 from apps.user.service import get_one_user_info
 from django.db.models import Q
+from django.utils import timezone
 
 
 def create_chat(chat):
     """
     新增聊天
     """
+    current_time = timezone.localtime()
     chat_obj = Chat.objects.create(
         content_type=chat.get('content_type'),
         content=chat.get('content'),
-        user_id=chat.get('user_id')
+        user_id=chat.get('user_id'),
+        createdAt=current_time,
+        updatedAt=current_time
     )
     return chat_obj
 
@@ -83,7 +87,7 @@ def get_chat_list(params):
     # 将聊天记录反转，并返回
     return {
         'current': current,
-        'size': len(chats),
+        'size': size,
         'total': count,
         'list': list(chats)[::-1],
     }

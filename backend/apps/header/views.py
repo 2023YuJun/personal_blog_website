@@ -14,13 +14,13 @@ class HeaderView(APIView):
     """
 
     def post(self, request, *args, **kwargs):
-        if request.path.endswith('/addOrUpdate/'):
+        if 'addOrUpdate' in request.path:
             return self.add_or_update_header(request)
-        elif request.path.endswith('/delete/'):
+        elif 'delete' in request.path:
             return self.delete_header(request)
 
     def get(self, request, *args, **kwargs):
-        if request.path.endswith('/getAll/'):
+        if 'getAll' in request.path:
             return self.get_all_header(request)
 
     def add_or_update_header(self, request):

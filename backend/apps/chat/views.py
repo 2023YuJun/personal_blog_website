@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from apps.chat.chat import *
+from apps.chat.service import *
 from utils.result import result, ERRORCODE, throw_error
 from utils.minioUpload import delete_minio_imgs
 
@@ -12,17 +12,18 @@ class ChatView(APIView):
     """
     聊天控制器
     """
+
     def post(self, request, *args, **kwargs):
-        if request.path.endswith('/add/'):
+        if 'add' in request.path:
             return self.create_chat(request)
-        elif request.path.endswith('/delete/'):
+        elif 'delete' in request.path:
             return self.delete_chats(request)
-        elif request.path.endswith('/getChatList/'):
+        elif 'getChatList' in request.path:
             return self.get_chat_list(request)
 
     def delete(self, request, *args, **kwargs):
-        if request.path.endswith('/deleteOne/'):
-            id = kwargs.get('id')
+        id = kwargs.get('id')
+        if 'deleteOne' in request.path:
             return self.delete_one_chat(request, id)
 
     def create_chat(self, request):

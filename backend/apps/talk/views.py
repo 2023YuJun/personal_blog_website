@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from utils.result import result, ERRORCODE, throw_error
-from apps.talk.talk import *
+from apps.talk.talk_service import *
 
 error_code = ERRORCODE['TALK']
 
@@ -13,44 +13,38 @@ class TalkView(APIView):
     """
 
     def post(self, request, *args, **kwargs):
-        if request.path.endswith('/publishTalk/'):
+        if 'publishTalk' in request.path:
             return self.publish_talk(request)
-        elif request.path.endswith('/getTalkList/'):
+        elif 'getTalkList' in request.path:
             return self.get_talk_list(request)
-        elif request.path.endswith('/blogGetTalkList/'):
+        elif 'blogGetTalkList' in request.path:
             return self.blog_get_talk_list(request)
 
     def put(self, request, *args, **kwargs):
-        if request.path.endswith('/updateTalk/'):
+        id = kwargs.get('id')
+        status = kwargs.get('status')
+        is_top = kwargs.get('is_top')
+
+        if 'updateTalk' in request.path:
             return self.update_talk(request)
-        elif request.path.endswith('/togglePublic/'):
-            id = kwargs.get('id')
-            status = kwargs.get('status')
+        elif 'togglePublic' in request.path:
             return self.toggle_public(request, id, status)
-        elif request.path.endswith('/toggleTop/'):
-            id = kwargs.get('id')
-            is_top = kwargs.get('is_top')
+        elif 'toggleTop' in request.path:
             return self.toggle_top(request, id, is_top)
-        elif request.path.endswith('/revertTalk/'):
-            id = kwargs.get('id')
+        elif 'revertTalk' in request.path:
             return self.revert_talk(request, id)
-        elif request.path.endswith('/like/'):
-            id = kwargs.get('id')
+        elif 'like' in request.path:
             return self.talk_like(request, id)
-        elif request.path.endswith('/cancelLike/'):
-            id = kwargs.get('id')
+        elif 'cancelLike' in request.path:
             return self.cancel_talk_like(request, id)
 
     def get(self, request, *args, **kwargs):
-        if request.path.endswith('/getTalkById/'):
-            id = kwargs.get('id')
-            return self.get_talk_by_id(request, id)
+        if 'getTalkById' in request.path:
+            return self.get_talk_by_id(request, kwargs.get('id'))
 
     def delete(self, request, *args, **kwargs):
-        if request.path.endswith('/deleteTalkById/'):
-            id = kwargs.get('id')
-            status = kwargs.get('status')
-            return self.delete_talk_by_id(request, id, status)
+        if 'deleteTalkById' in request.path:
+            return self.delete_talk_by_id(request, kwargs.get('id'), kwargs.get('status'))
 
     def publish_talk(self, request):
         """发布说说"""

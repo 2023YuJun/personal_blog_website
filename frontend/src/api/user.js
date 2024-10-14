@@ -43,7 +43,7 @@ export const updateUserPassword = (data) => {
 /** 获取当前登录人的信息 */
 export const getUserInfoById = (id) => {
   return new Promise((resolve, reject) => {
-    http.get("/api/user/getUserInfoById" + id, {}).then((res) => {
+    http.get(`/api/user/getUserInfoById/${id}/`, {}).then((res) => {
       resolve(res);
     });
   });

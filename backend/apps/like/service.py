@@ -1,11 +1,13 @@
 from apps.like.models import Like
+from django.utils import timezone
 
 
 def add_like(like_data):
     """
     点赞
     """
-    Like.objects.create(**like_data)
+    current_time = timezone.localtime()
+    Like.objects.create(**like_data, createdAt=current_time, updatedAt=current_time)
     return True
 
 

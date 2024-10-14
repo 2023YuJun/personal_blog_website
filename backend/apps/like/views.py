@@ -1,11 +1,11 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from apps.like.like import *
+from apps.like.service import *
 from apps.article.article_service import article_like, cancel_article_like
-from apps.talk.talk import talk_like, cancel_talk_like
-from apps.comment.comment import comment_like, cancel_comment_like
-from apps.message.message import message_like, cancel_message_like
+from apps.talk.talk_service import talk_like, cancel_talk_like
+from apps.comment.service import comment_like, cancel_comment_like
+from apps.message.service import message_like, cancel_message_like
 from utils.result import throw_error, result, ERRORCODE
 
 error_code = ERRORCODE['LIKE']
@@ -13,11 +13,11 @@ error_code = ERRORCODE['LIKE']
 
 class LikeView(APIView):
     def post(self, request, *args, **kwargs):
-        if request.path.endswith('/addLike/'):
+        if 'addLike' in request.path:
             return self.add_like(request)
-        elif request.path.endswith('/cancelLike/'):
+        elif 'cancelLike' in request.path:
             return self.cancel_like(request)
-        elif request.path.endswith('/getIsLikeByIdOrIpAndType/'):
+        elif 'getIsLikeByIdOrIpAndType' in request.path:
             return self.get_is_like_by_id_and_type(request)
 
     def add_like(self, request):

@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from apps.message.message import *
+from apps.message.service import *
 from ..notify.views import NotifyView
 from utils.result import throw_error, result, ERRORCODE
 from utils.sensitive import filter_sensitive
@@ -12,29 +12,26 @@ error_code = ERRORCODE['MESSAGE']
 
 class MessageView(APIView):
     def post(self, request, *args, **kwargs):
-        if request.path.endswith('/add/'):
+        if 'add' in request.path:
             return self.add_message(request)
-        elif request.path.endswith('/update/'):
+        elif 'update' in request.path:
             return self.update_message(request)
-        elif request.path.endswith('/getMessageList/'):
+        elif 'getMessageList' in request.path:
             return self.get_message_list(request)
 
     def put(self, request, *args, **kwargs):
-        if request.path.endswith('/delete/'):
+        id = kwargs.get('id')
+        if 'delete' in request.path or 'backDelete' in request.path:
             return self.delete_message(request)
-        elif request.path.endswith('/backDelete/'):
-            return self.delete_message(request)
-        elif request.path.endswith('/like/'):
-            id = kwargs.get('id')
+        elif 'like' in request.path:
             return self.message_like(request, id)
-        elif request.path.endswith('/cancelLike/'):
-            id = kwargs.get('id')
+        elif 'cancelLike' in request.path:
             return self.cancel_message_like(request, id)
 
     def get(self, request, *args, **kwargs):
-        if request.path.endswith('/getAllMessage/'):
+        if 'getAllMessage' in request.path:
             return self.get_all_message(request)
-        elif request.path.endswith('/getHotTagList/'):
+        elif 'getHotTagList' in request.path:
             return self.get_message_tag(request)
 
     def add_message(self, request):
