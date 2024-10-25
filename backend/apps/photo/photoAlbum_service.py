@@ -1,7 +1,7 @@
 from django.utils import timezone
-
+from .models import PhotoAlbum
 from apps.photo.photo_service import delete_photos_by_album_id
-from .serializers import *
+from .serializers import PhotoAlbumSerializer
 
 
 def add_album(album_name, album_cover, description):
@@ -11,6 +11,7 @@ def add_album(album_name, album_cover, description):
     current_time = timezone.localtime()
     res = PhotoAlbum.objects.create(album_name=album_name, album_cover=album_cover, description=description,
                                     createdAt=current_time, updatedAt=current_time)
+    res = PhotoAlbumSerializer(res, many=True).data
     return res
 
 
@@ -76,6 +77,7 @@ def get_all_album_list():
     获取所有的相册
     """
     res = PhotoAlbum.objects.all().order_by('-createdAt')
+    res = PhotoAlbumSerializer(res, many=True).data
     return res
 
 

@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.utils import timezone
-
-from .serializers import *
+from .models import Photo
+from .serializers import PhotoSerializer
 
 
 def add_photos(photo_list):
@@ -19,6 +19,7 @@ def add_photos(photo_list):
     with transaction.atomic():
         res = Photo.objects.bulk_create(photos_to_create)
 
+    res = PhotoSerializer(res, many=True).data
     return res
 
 
@@ -31,7 +32,7 @@ def delete_photos(id_list, type):
         res = Photo.objects.filter(id__in=id_list).update(status=2, updatedAt=current_time)
     else:
         res = Photo.objects.filter(id__in=id_list).delete()
-
+    res = PhotoSerializer(res, many=True).data
     return res
 
 
@@ -41,6 +42,7 @@ def revert_photos(id_list):
     """
     current_time = timezone.localtime()
     res = Photo.objects.filter(id__in=id_list).update(status=1, updatedAt=current_time)
+    res = PhotoSerializer(res, many=True).data
     return res
 
 
@@ -68,6 +70,7 @@ def delete_photos_by_album_id(album_id):
     根据相册id删除图片
     """
     res = Photo.objects.filter(album_id=album_id).delete()
+    res = PhotoSerializer(res, many=True).data
     return res
 
 
@@ -76,4 +79,5 @@ def get_all_photos_by_album_id(album_id):
     获取所有可用的图片
     """
     res = Photo.objects.filter(album_id=album_id, status=1).order_by('-createdAt')
+    res = PhotoSerializer(res, many=True).data
     return res
