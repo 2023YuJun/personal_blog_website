@@ -11,7 +11,7 @@ SENSITIVE_WORDS = [
 BAD_JS_PATTERN = re.compile(r'script|alert|window|prompt|location|href|iframe|onload|onerror', re.IGNORECASE)
 
 
-async def create_automaton(words):
+def create_automaton(words):
     automaton = ahocorasick.Automaton()
     for idx, word in enumerate(words):
         automaton.add_word(word, (idx, word))
@@ -19,7 +19,7 @@ async def create_automaton(words):
     return automaton
 
 
-async def filter_sensitive(text):
+def filter_sensitive(text):
     automaton = create_automaton(SENSITIVE_WORDS)
     filtered_text = text
 
@@ -32,7 +32,7 @@ async def filter_sensitive(text):
         return filtered_text
 
 
-async def get_saying():
+def get_saying():
     try:
         response = requests.get("https://open.iciba.com/dsapi/")
         if response.status_code == 200:

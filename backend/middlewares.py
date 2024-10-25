@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from utils.result import ERRORCODE, throw_error
 from django.utils import timezone
 from datetime import timedelta
+
 error_code = ERRORCODE['AUTH']  # 用户权限不足
 token_error_code = ERRORCODE['AUTHTOKEN']  # 用户登录过期
 
@@ -12,10 +13,7 @@ token_error_code = ERRORCODE['AUTHTOKEN']  # 用户登录过期
 class AuthMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
-
-    def __call__(self, request):
-        # 只对特定路径应用中间件
-        if request.path in [
+        self.paths = [
             'article/add/',
             'article/update/',
             'article/updateTop/',
@@ -53,7 +51,12 @@ class AuthMiddleware:
             'user/updateRole/',
             'user/adminUpdateUserInfo/',
             'user/getUserList/',
-        ]:
+        ]
+
+    def __call__(self, request):
+        # 只对特定路径应用中间件
+        request_path = request.path.lstrip('/')
+        if any(request_path.startswith(path) for path in self.paths):
             authorization = request.headers.get('Authorization')
             if not authorization:
                 print("您没有权限访问，请先登录")
@@ -61,8 +64,9 @@ class AuthMiddleware:
             token = authorization.replace("Bearer ", "")
 
             try:
-                user = jwt.decode(token, settings.JWT_SECRET, algorithms=["HS2106"])
-                request.user = user  # 将用户信息保存到请求中
+                # 将用户信息保存到请求中
+                payload = jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
+                request.payload = payload
             except jwt.ExpiredSignatureError:
                 print("token已过期")
                 return JsonResponse(throw_error(token_error_code, "token已过期"), status=401)
@@ -76,9 +80,7 @@ class AuthMiddleware:
 class NeedAdminAuthNotNeedSuperMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
-
-    def __call__(self, request):
-        if request.path in [
+        self.paths = [
             'article/add/',
             'article/update/',
             'article/updateTop/',
@@ -107,14 +109,18 @@ class NeedAdminAuthNotNeedSuperMiddleware:
             'talk/revertTalk/',
             'user/updateRole/',
             'user/adminUpdateUserInfo/',
-        ]:
+        ]
+
+    def __call__(self, request):
+        request_path = request.path.lstrip('/')
+        if any(request_path.startswith(path) for path in self.paths):
             authorization = request.headers.get('Authorization')
             if not authorization:
                 print("您没有权限访问，请先登录")
                 return JsonResponse(throw_error(token_error_code, "您没有权限访问，请先登录"), status=403)
             token = authorization.replace("Bearer ", "")
             try:
-                user = jwt.decode(token, settings.JWT_SECRET, algorithms=["HS2106"])
+                user = jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
                 role = user['role']
                 username = user['username']
 
@@ -137,14 +143,16 @@ class NeedAdminAuthNotNeedSuperMiddleware:
 class AdminAuthMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
-
-    def __call__(self, request):
-        if request.path in [
+        self.paths = [
             'chat/delete/',
             'config/update/',
             'pageHeader/addOrUpdate/',
             'pageHeader/delete/',
-        ]:
+        ]
+
+    def __call__(self, request):
+        request_path = request.path.lstrip('/')
+        if any(request_path.startswith(path) for path in self.paths):
             authorization = request.headers.get('Authorization')
             if not authorization:
                 print("您没有权限访问，请先登录")
@@ -152,7 +160,7 @@ class AdminAuthMiddleware:
             token = authorization.replace("Bearer ", "")
 
             try:
-                user = jwt.decode(token, settings.JWT_SECRET, algorithms=["HS2106"])
+                user = jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
                 if user['role'] != 1:
                     return JsonResponse(throw_error(error_code, "普通用户仅限查看"), status=403)
             except jwt.ExpiredSignatureError:
@@ -169,12 +177,14 @@ class AdminAuthMiddleware:
 class SuperAdminAuthMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
-
-    def __call__(self, request):
-        if request.path in [
+        self.paths = [
             'user/updateOwnUserInfo/',
             'user/updatePassword/',
-        ]:
+        ]
+
+    def __call__(self, request):
+        request_path = request.path.lstrip('/')
+        if any(request_path.startswith(path) for path in self.paths):
             authorization = request.headers.get('Authorization')
             if not authorization:
                 print("您没有权限访问，请先登录")
@@ -182,7 +192,7 @@ class SuperAdminAuthMiddleware:
             token = authorization.replace("Bearer ", "")
 
             try:
-                user = jwt.decode(token, settings.JWT_SECRET, algorithms=["HS2106"])
+                user = jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
                 if user['username'] == 'admin':
                     return JsonResponse({"message": "管理员信息只可通过配置信息修改"}, status=403)
             except jwt.ExpiredSignatureError:
@@ -199,13 +209,8 @@ class SuperAdminAuthMiddleware:
 class RateLimitMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
-
-    def __call__(self, request):
-        # 获取请求路径
-        path = request.path
-
         # 根据路径设置不同的请求限制参数
-        limits = {
+        self.limits = {
             'article/like/': {'max_requests': 10, 'interval': 10, 'message': '文章点赞过于频繁 请稍后再试'},
             'article/cancelLike/': {'max_requests': 10, 'interval': 10, 'message': '取消文章点赞过于频繁 请稍后再试'},
             'comment/add/': {'max_requests': 20, 'interval': 10, 'message': '评论过于频繁 请稍后再试'},
@@ -227,10 +232,13 @@ class RateLimitMiddleware:
             'user/register/': {'max_requests': 3, 'interval': 10, 'message': '用户注册过于频繁 请稍后再试'},
         }
 
-        limit = limits.get(path)
+    def __call__(self, request):
+        # 获取请求路径
+        request_path = request.path.lstrip('/')
+        limit = next((v for k, v in self.limits.items() if request_path.startswith(k)), None)
         if limit:
             ip = self.get_client_ip(request)
-            key = f"rate_limit_{ip}_{path}"
+            key = f"rate_limit_{ip}_{request.path}"
             current_time = timezone.localtime()
             # 从缓存中获取请求数据
             request_data = cache.get(key, {'count': 0, 'first_request_time': current_time})

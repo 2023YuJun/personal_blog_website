@@ -30,7 +30,7 @@ MINIO_BUCKET = 'blog-images'
 
 APP_PORT = 8000
 BASEURL = 'http://127.0.0.1:8000/'
-ADMIN_PASSWORD = ''
+ADMIN_PASSWORD = 'admin123456'
 
 # JWT secretkey
 JWT_SECRET = 'blog'
