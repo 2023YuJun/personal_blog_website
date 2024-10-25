@@ -4,8 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01d6a626-47e0-4c13-8582-b462f8b63d5e" name="更改" comment="已完成前台和后台常用接口连接编写">
+    <list default="true" id="01d6a626-47e0-4c13-8582-b462f8b63d5e" name="更改" comment="修复说说图片显示功能、说说新增功能问题">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/article/article_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/article/article_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/article/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/article/common.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/article/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/article/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/tag/service.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/tag/service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/talk/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/talk/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/talk/talkPhoto_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/talk/talkPhoto_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/talk/talk_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/talk/talk_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/talk/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/talk/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/backend/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/backend/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/middlewares.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/middlewares.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/utils/sensitive.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/utils/sensitive.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/components.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,6 +38,12 @@
         </map>
       </branch-storage>
     </excluded-from-favorite>
+    <option name="PUSH_TAGS">
+      <GitPushTagMode>
+        <option name="argument" value="--tags" />
+        <option name="title" value="All" />
+      </GitPushTagMode>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -37,25 +55,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/personal_blog_website&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.stylelint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.stylelint&quot;: &quot;E:\\personal_blog_website\\dashboard\\node_modules\\stylelint&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "true",
+    "last_opened_file_path": "E:/personal_blog_website",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.stylelint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.stylelint": "E:\\personal_blog_website\\dashboard\\node_modules\\stylelint",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "ts.external.directory.path": "E:\\personal_blog_website\\dashboard\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="默认任务">
@@ -72,6 +91,9 @@
       <workItem from="1728818480183" duration="752000" />
       <workItem from="1728838698071" duration="707000" />
       <workItem from="1728892752828" duration="3000" />
+      <workItem from="1728929396442" duration="396000" />
+      <workItem from="1728969123796" duration="10000" />
+      <workItem from="1729871911980" duration="1120000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1727894924909</created>
@@ -129,7 +151,56 @@
       <option name="project" value="LOCAL" />
       <updated>1728838804960</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="解决前端运行时间显示问题，修改了所有视图类路径查找匹配判断，解决部分后端数据传输到前端序列化出错问题">
+      <created>1728929628614</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1728929628614</updated>
+    </task>
+    <task id="LOCAL-00010" summary="修复请求格式无法被后端识别问题">
+      <created>1729872507670</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1729872507670</updated>
+    </task>
+    <task id="LOCAL-00011" summary="修复时间格式无法正常识别问题">
+      <created>1729872625411</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1729872625411</updated>
+    </task>
+    <task id="LOCAL-00012" summary="修复后台无法使用相册和图片功能问题">
+      <created>1729872728185</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1729872728185</updated>
+    </task>
+    <task id="LOCAL-00013" summary="修复后台请求格式后台无法识别问题">
+      <created>1729872784812</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1729872784812</updated>
+    </task>
+    <task id="LOCAL-00014" summary="修复后台和前端用户无法修改自身数据问题">
+      <created>1729872838421</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1729872838421</updated>
+    </task>
+    <task id="LOCAL-00015" summary="修复说说图片显示功能、说说新增功能问题">
+      <created>1729873043048</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1729873043048</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -209,6 +280,13 @@
     <MESSAGE value="优化后端目录结构，修改部分app的service逻辑" />
     <MESSAGE value="添加后台管理页面开发内容" />
     <MESSAGE value="已完成前台和后台常用接口连接编写" />
-    <option name="LAST_COMMIT_MESSAGE" value="已完成前台和后台常用接口连接编写" />
+    <MESSAGE value="解决前端运行时间显示问题，修改了所有视图类路径查找匹配判断，解决部分后端数据传输到前端序列化出错问题" />
+    <MESSAGE value="修复请求格式无法被后端识别问题" />
+    <MESSAGE value="修复时间格式无法正常识别问题" />
+    <MESSAGE value="修复后台无法使用相册和图片功能问题" />
+    <MESSAGE value="修复后台请求格式后台无法识别问题" />
+    <MESSAGE value="修复后台和前端用户无法修改自身数据问题" />
+    <MESSAGE value="修复说说图片显示功能、说说新增功能问题" />
+    <option name="LAST_COMMIT_MESSAGE" value="修复说说图片显示功能、说说新增功能问题" />
   </component>
 </project>

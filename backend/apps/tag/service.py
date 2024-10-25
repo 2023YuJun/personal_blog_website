@@ -63,13 +63,12 @@ def get_tag_list(request):
     size = request.data.get('size')
     tag_name = request.data.get('tag_name')
     offset = size * (current - 1)
-    limit = size
 
     where_opt = Q()
     if tag_name:
         where_opt &= Q(tag_name__icontains=tag_name)
 
-    rows = Tag.objects.filter(where_opt)[offset:offset + limit]
+    rows = Tag.objects.filter(where_opt)[offset:offset + size]
     rows = TagSerializer(rows, many=True).data
     total_count = Tag.objects.filter(where_opt).count()
     return {

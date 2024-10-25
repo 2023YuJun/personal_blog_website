@@ -21,16 +21,17 @@ def update_url():
         article.save()
 
 
-def create_article(article_data):
+def create_article(data):
     """
     新增文章
     """
+    valid_fields = {field.name for field in Article._meta.get_fields()}
+    article_data = {key: value for key, value in data.items() if key in valid_fields}
     try:
         with transaction.atomic():
             current_time = timezone.localtime()
             article = Article.objects.create(**article_data, createdAt=current_time, updatedAt=current_time)
-            res = ArticleSerializer(article, many=True).data
-            return res
+            return article
     except Exception as e:
         print(e)
         return None

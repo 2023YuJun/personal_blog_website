@@ -18,6 +18,9 @@ def create_category_or_return(category_name, id=None):
 
 def create_article_tag_by_article_id(article_id, tag_list):
     result_list = []
+    # 确保 tag_list 不为空且每个标签字典都有 'tag_name' 键
+    if not tag_list or any('tag_name' not in tag for tag in tag_list):
+        return result_list
 
     # 先将新增的tag进行保存，拿到tag的id
     for tag in tag_list:
