@@ -69,7 +69,7 @@ setOptions(
             }
           ])
         },
-        data: [2, 6]
+        data: [0, 0]
       },
       {
         name: "fork",
@@ -87,7 +87,7 @@ setOptions(
             }
           ])
         },
-        data: [12, 38]
+        data: [0, 0]
       },
       {
         name: "star",
@@ -105,7 +105,7 @@ setOptions(
             }
           ])
         },
-        data: [89, 125]
+        data: [0, 0]
       }
     ],
     addTooltip: true
