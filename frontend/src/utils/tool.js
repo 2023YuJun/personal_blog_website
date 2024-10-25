@@ -233,7 +233,7 @@ export function filterMessage(text) {
 export const returnTime = (time) => {
   if (!time) return;
   // eslint-disable-next-line
-  time = time.replace(/\-/g, "/"); // 解决ios系统上格式化时间出现NAN的bug
+  time = time.replace(/\//g, "-"); // 解决ios系统上格式化时间出现NAN的bug
   let times = new Date().getTime() - new Date(time).getTime();
   let res;
   if (times < 6e4) {
