@@ -1,4 +1,6 @@
 import re
+import jwt
+from django.conf import settings
 from django.contrib.auth.hashers import make_password, check_password
 from django.db.models import Q
 from django.http import JsonResponse
@@ -45,8 +47,9 @@ def update_own_user_info(user_id, user):
     nick_name = filter_sensitive(user.get('nick_name'))
     avatar = user.get('avatar')
     qq = user.get('qq')
+    current_time = timezone.localtime()
 
-    res = User.objects.filter(id=user_id).update(avatar=avatar, nick_name=nick_name, qq=qq)
+    res = User.objects.filter(id=user_id).update(avatar=avatar, nick_name=nick_name, qq=qq, updatedAt=current_time)
     return res > 0
 
 
@@ -55,7 +58,8 @@ def update_password(user_id, password):
     修改用户密码
     """
     hashed_password = make_password(password)
-    res = User.objects.filter(id=user_id).update(password=hashed_password)
+    current_time = timezone.localtime()
+    res = User.objects.filter(id=user_id).update(password=hashed_password, updatedAt=current_time)
     return res > 0
 
 
@@ -63,7 +67,8 @@ def update_role(user_id, role):
     """
     修改用户角色
     """
-    res = User.objects.filter(id=user_id).update(role=role)
+    current_time = timezone.localtime()
+    res = User.objects.filter(id=user_id).update(role=role, updatedAt=current_time)
     return res > 0
 
 
@@ -122,7 +127,8 @@ def update_ip(user_id, ip):
     """
     修改用户ip地址
     """
-    res = User.objects.filter(id=user_id).update(ip=ip)
+    current_time = timezone.localtime()
+    res = User.objects.filter(id=user_id).update(ip=ip, updatedAt=current_time)
     return res > 0
 
 
@@ -145,9 +151,11 @@ def admin_update_user_info(user_data):
     """
     管理员修改用户信息
     """
+    current_time = timezone.localtime()
     update_count = User.objects.filter(id=user_data['id']).update(
         nick_name=user_data['nick_name'],
-        avatar=user_data['avatar']
+        avatar=user_data['avatar'],
+        updatedAt=current_time
     )
     return update_count > 0
 
@@ -208,6 +216,31 @@ def verify_update_password(username, current_password, new_password1, new_passwo
         if not check_password(current_password, res.password):
             return JsonResponse(throw_error(error_code, "密码不匹配"), status=400)
     else:
-        return JsonResponse(throw_error(error_code, "admin密码只可以通过配置文件env修改"), status=400)
+        return JsonResponse(throw_error(error_code, "admin密码只可以通过settings修改"), status=400)
 
     return None
+
+
+# def decode_token(request, attribute=None):
+#     """
+#     从请求头中获取并解码 token，提取用户信息。
+#     如果提供了 attribute 参数，则返回指定属性的值；否则返回整个 payload。
+#     """
+#     auth_header = request.headers.get('Authorization')
+#     if not auth_header:
+#         raise ValueError("Authorization header is missing")
+#
+#     token = auth_header.split(' ')[-1]  # 提取 token 部分
+#     try:
+#         # 使用 JWT 解析 token
+#         decoded_token = jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
+#
+#         # 如果指定了属性名称，返回该属性的值；否则返回整个 payload
+#         if attribute:
+#             return decoded_token.get(attribute)
+#         return decoded_token
+#
+#     except jwt.ExpiredSignatureError:
+#         raise ValueError("Token has expired")
+#     except jwt.InvalidTokenError:
+#         raise ValueError("Invalid token")

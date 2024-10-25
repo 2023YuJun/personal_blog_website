@@ -1,12 +1,12 @@
-import jwt
+from django.forms import model_to_dict
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from utils.result import result
-from django.conf import settings
+
 from apps.user.service import *
-from utils.tool import get_ip_address
 from utils.minioUpload import delete_minio_imgs
-from django.forms.models import model_to_dict
+from utils.result import result
+from utils.tool import get_ip_address
+
 error_code = ERRORCODE['USER']
 
 
@@ -62,28 +62,27 @@ class UserView(APIView):
                 if response is None:
                     if username == "admin":
                         if password == settings.ADMIN_PASSWORD:
-                            token = jwt.encode({"nick_name": "超级管理员", "id": 5201314, "role": 1, "username": "admin"},
-                                               settings.JWT_SECRET, algorithm="HS256")
+                            token = jwt.encode(
+                                {"nick_name": "超级管理员", "id": 5201314, "role": 1, "username": "admin"},
+                                settings.JWT_SECRET, algorithm="HS256")
                             return JsonResponse(result("超级管理员登录成功",
-                                                       {"token": token, "username": "超级管理员", "role": 1, "id": 5201314}))
+                                                       {"token": token, "username": "超级管理员", "role": 1,
+                                                        "id": 5201314}))
                         else:
                             return JsonResponse(throw_error(error_code, "密码错误"), status=400)
                     else:
                         res = get_one_user_info({"username": username})
-                        ip = request.META.get("HTTP_X_REAL_IP") or request.META.get("HTTP_X_FORWARDED_FOR") or request.META.get(
+                        ip = request.META.get("HTTP_X_REAL_IP") or request.META.get(
+                            "HTTP_X_FORWARDED_FOR") or request.META.get(
                             "REMOTE_ADDR")
                         update_ip(res.id, ip.split(":")[-1])
                         ip_address = get_ip_address()
-                        payload = {
-                            "id": res.id,
-                            "username": res.username,
-                            "role": res.role,
-                            "nick_name": res.nick_name
-                        }
-                        token = jwt.encode(payload, settings.JWT_SECRET, algorithm="HS256")
+                        token = jwt.encode(
+                            {"id": res.id, "username": res.username, "role": res.role, "nick_name": res.nick_name},
+                            settings.JWT_SECRET, algorithm="HS256")
                         return JsonResponse(result("用户登录成功",
-                                                   {"token": token, "username": res.username, "role": res.role, "id": res.id,
-                                                    "ipAddress": ip_address}), status=200)
+                                                   {"token": token, "username": res.username, "role": res.role,
+                                                    "id": res.id, "ipAddress": ip_address}), status=200)
                 else:
                     return response
             else:
@@ -95,7 +94,7 @@ class UserView(APIView):
     def update_own_user_info(self, request):
         """用户修改自己的用户信息"""
         try:
-            user_id = request.user.id
+            user_id = request.payload['id']
             avatar = request.data.get("avatar")
             one = get_one_user_info({"id": user_id})
 
@@ -112,18 +111,21 @@ class UserView(APIView):
     def update_password(self, request):
         """修改密码"""
         try:
-            username = request.data.get("username")
-            current_password = request.data.get("current_password")
+            user_id = request.payload['id']
+            username = request.payload['username']
+            current_password = request.data.get("password")
             password1 = request.data.get("password1")
             password2 = request.data.get("password2")
-            user_id = request.user.id
 
             if user_id == 2:
                 return Response(throw_error(error_code, "测试用户密码不可以修改哦"), status=400)
 
-            verify_update_password(username, current_password, password1, password2)
-            res = update_password(user_id, password1)
-            return Response(result("修改用户密码成功", res))
+            response = verify_update_password(username, current_password, password1, password2)
+            if response is None:
+                res = update_password(user_id, password1)
+                return Response(result("修改用户密码成功", res))
+            else:
+                return response
         except Exception as err:
             print(err)
             return Response(throw_error(error_code, "修改用户密码失败"), status=500)
