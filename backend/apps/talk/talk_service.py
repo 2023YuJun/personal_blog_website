@@ -1,7 +1,8 @@
 from apps.talk.talkPhoto_service import publish_talk_photo, delete_talk_photo, get_photo_by_talk_id
 from apps.user.service import get_one_user_info
 from apps.like.service import get_is_like_by_id_and_type, get_is_like_by_ip_and_type
-from .serializers import *
+from .serializers import TalkSerializer
+from .models import Talk
 from django.utils import timezone
 from django.db import transaction
 
@@ -10,7 +11,7 @@ def publish_talk(talk):
     """
     新增说说
     """
-    talk_img_list = talk.get('talkImgList', [])
+    talk_img_list = talk.pop('talkImgList', [])
     current_time = timezone.localtime()
     talk['createdAt'] = current_time
     talk['updatedAt'] = current_time
@@ -125,17 +126,6 @@ def get_talk_list(current, size, status):
 
     rows = Talk.objects.filter(**where_opt).order_by('is_top', '-createdAt')[offset:offset + limit]
     count = Talk.objects.filter(**where_opt).count()
-
-    # 处理图片
-    for row in rows:
-        row.talkImgList = get_photo_by_talk_id(row.id)
-        # 获取用户信息
-
-    for row in rows:
-        user_info = get_one_user_info({'id': row.user_id})
-        if user_info:
-            row.nick_name = user_info.nick_name
-            row.avatar = user_info.avatar
 
     rows = TalkSerializer(rows, many=True).data
 
