@@ -25,7 +25,7 @@ export const editTalk = (data?: object) => {
 export const deleteTalkById = (id, status) => {
   return http.request<TalkResult>(
     "delete",
-    `/api/talk/deleteTalkById/${id}/${status}`,
+    `/api/talk/deleteTalkById/${id}/${status}/`,
     {}
   );
 };
@@ -34,7 +34,7 @@ export const deleteTalkById = (id, status) => {
 export const togglePublic = (id, status) => {
   return http.request<TalkResult>(
     "put",
-    `/api/talk/togglePublic/${id}/${status}`,
+    `/api/talk/togglePublic/${id}/${status}/`,
     {}
   );
 };
@@ -43,7 +43,7 @@ export const togglePublic = (id, status) => {
 export const toggleTop = (id, is_top) => {
   return http.request<TalkResult>(
     "put",
-    `/api/talk/toggleTop/${id}/${is_top}`,
+    `/api/talk/toggleTop/${id}/${is_top}/`,
     {}
   );
 };
