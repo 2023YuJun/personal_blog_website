@@ -150,7 +150,7 @@ const edit = id => {
 };
 
 const returnTime = time => {
-  time = time.replace(/\//g, "-");
+  time = time.replace(/-/g, "/"); // 解决ios系统上格式化时间出现NAN的bug
   const times = new Date().getTime() - new Date(time).getTime();
   let res;
   if (times < 6e4) {

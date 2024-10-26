@@ -202,19 +202,13 @@ onBeforeUnmount(() => {
       <el-col :xs="24" :sm="18">
         <el-skeleton v-if="loading" :loading="loading" :rows="8" animated />
         <el-card v-else class="md-preview">
-          <MdPreview
-            class="md-preview-v3"
-            v-model="mdState.text"
-            :editorId="mdState.id"
-            :preview-theme="previewTheme"
-            :code-theme="codeTheme"
-            :theme="mainTheme ? 'dark' : 'light'"
-          ></MdPreview>
+          <MdPreview class="md-preview-v3" v-model="mdState.text" :editorId="mdState.id" :preview-theme="previewTheme"
+            :code-theme="codeTheme" :theme="mainTheme ? 'dark' : 'light'"></MdPreview>
           <div class="article-info">
             <div class="article-info-inner">
               <div>
                 <span>文章作者：</span>
-                <a class="to_pointer" href="https://gitee.com/mrzym">{{
+                <a class="to_pointer" href="https://gitee.com/YuJun2024">{{
                   articleInfo.authorName
                 }}</a>
               </div>
@@ -234,27 +228,21 @@ onBeforeUnmount(() => {
                 <span>本文链接：</span>
                 <a class="to_pointer" v-copy="currentUrl">{{ currentUrl }}</a>
               </div>
-              <p>声明: 此文章版权归 Mr M 所有，如有转载，请注明来自原作者</p>
+              <p v-if="articleInfo.type == 1">声明: 此文章版权归 {{ articleInfo.authorName }} 所有，如有转载，请注明来自原作者</p>
             </div>
           </div>
           <div :class="['like', isLike ? 'is-like' : '']" @click="like">
             <i class="iconfont icon-icon1 !mr-[5px]"></i>
-            <GsapCount
-              :class="[isLike ? 'is-like' : '']"
-              v-if="articleInfo.thumbs_up_times - 0 < 1000"
-              :value="articleInfo.thumbs_up_times"
-            />
+            <GsapCount :class="[isLike ? 'is-like' : '']" v-if="articleInfo.thumbs_up_times - 0 < 1000"
+              :value="articleInfo.thumbs_up_times" />
             <span v-else :class="[isLike ? 'is-like' : '']">
               {{ articleInfo.thumbs_up_times }}
             </span>
           </div>
           <div class="recommend flex_r_between">
             <div class="recommend-box" @click="goToArticle(previousArticle)">
-              <el-image
-                class="recommend-box-img animate__animated animate__fadeInDown"
-                fit="cover"
-                :src="previousArticle.article_cover"
-              >
+              <el-image class="recommend-box-img animate__animated animate__fadeInDown" fit="cover"
+                :src="previousArticle.article_cover">
                 <template #error>
                   <svg-icon name="image404" :width="10" :height="5"></svg-icon>
                 </template>
@@ -264,21 +252,13 @@ onBeforeUnmount(() => {
                   <i class="iconfont icon-arrowleft"></i>
                   <span class="font-semibold">上一篇</span>
                 </span>
-                <Tooltip
-                  width="60%"
-                  color="#fff"
-                  :weight="600"
-                  :name="previousArticle.article_title"
-                  align="left"
-                ></Tooltip>
+                <Tooltip width="60%" color="#fff" :weight="600" :name="previousArticle.article_title" align="left">
+                </Tooltip>
               </span>
             </div>
             <div class="recommend-box" @click="goToArticle(nextArticle)">
-              <el-image
-                class="recommend-box-img animate__animated animate__fadeInDown"
-                fit="cover"
-                :src="nextArticle.article_cover"
-              >
+              <el-image class="recommend-box-img animate__animated animate__fadeInDown" fit="cover"
+                :src="nextArticle.article_cover">
                 <template #error>
                   <svg-icon name="image404" :width="10" :height="5"></svg-icon>
                 </template>
@@ -288,13 +268,8 @@ onBeforeUnmount(() => {
                   <span class="font-semibold">下一篇</span>
                   <i class="iconfont icon-arrowright"></i>
                 </span>
-                <Tooltip
-                  width="60%"
-                  color="#fff"
-                  :weight="600"
-                  :name="nextArticle.article_title"
-                  align="right"
-                ></Tooltip>
+                <Tooltip width="60%" color="#fff" :weight="600" :name="nextArticle.article_title" align="right">
+                </Tooltip>
               </span>
             </div>
           </div>
@@ -302,21 +277,12 @@ onBeforeUnmount(() => {
           <div class="mobile-recommend">
             <el-row style="padding: 2rem">
               <div class="recommend-title">推荐文章</div>
-              <el-col
-                :span="12"
-                v-for="item in recommendList"
-                :key="item.id"
-                @click="goToArticle(item)"
-              >
+              <el-col :span="12" v-for="item in recommendList" :key="item.id" @click="goToArticle(item)">
                 <el-card class="card card-hover">
                   <template #header>
                     <span :title="item.article_title" class="title">{{ item.article_title }}</span>
                   </template>
-                  <el-image
-                    class="image animate__animated animate__fadeInDown"
-                    fit="cover"
-                    :src="item.article_cover"
-                  >
+                  <el-image class="image animate__animated animate__fadeInDown" fit="cover" :src="item.article_cover">
                     <template #error>
                       <svg-icon name="image404" :width="10" :height="5"></svg-icon>
                     </template>
@@ -326,13 +292,8 @@ onBeforeUnmount(() => {
             </el-row>
           </div>
           <div class="!p-[2rem] comment-box">
-            <Comment
-              ref="commentRef"
-              class="w-[100%]"
-              type="article"
-              :id="route.query.id - 0"
-              :author-id="articleInfo.author_id"
-            />
+            <Comment ref="commentRef" class="w-[100%]" type="article" :id="route.query.id - 0"
+              :author-id="articleInfo.author_id" />
           </div>
         </el-card>
       </el-col>
@@ -340,18 +301,10 @@ onBeforeUnmount(() => {
         <el-skeleton v-if="loading" :loading="loading" :rows="3" animated />
         <el-card v-else class="command card-hover" header="推荐文章">
           <div class="command-box">
-            <div
-              class="command-box-item"
-              v-for="(item, index) in recommendList"
-              :key="index"
-              @click="goToArticle(item)"
-            >
-              <el-image
-                class="command-box-item__img animate__animated animate__fadeInDown"
-                fit="cover"
-                width="50"
-                :src="item.article_cover"
-              >
+            <div class="command-box-item" v-for="(item, index) in recommendList" :key="index"
+              @click="goToArticle(item)">
+              <el-image class="command-box-item__img animate__animated animate__fadeInDown" fit="cover" width="50"
+                :src="item.article_cover">
                 <template #error>
                   <svg-icon name="image404" :width="5" :height="5"></svg-icon>
                 </template>
@@ -375,15 +328,8 @@ onBeforeUnmount(() => {
       <i class="iconfont icon-arrowright" @click="toggleDrawer"></i>
     </div>
     <!-- 移动端目录 -->
-    <el-drawer
-      title="目录"
-      v-model="drawerShow"
-      direction="ltr"
-      :before-close="toggleDrawer"
-      :append-to-body="true"
-      size="60%"
-      :z-index="9999"
-    >
+    <el-drawer title="目录" v-model="drawerShow" direction="ltr" :before-close="toggleDrawer" :append-to-body="true"
+      size="60%" :z-index="9999">
       <MdCatalog v-if="!loading" :editorId="mdState.id" :scroll-element="scrollElement" />
     </el-drawer>
   </div>
@@ -482,6 +428,7 @@ onBeforeUnmount(() => {
       .recommend-box-img {
         scale: 1.2;
       }
+
       .recommend-box-item {
         background-color: var(--mask-bg);
       }
@@ -547,6 +494,7 @@ onBeforeUnmount(() => {
   .icon-icon1 {
     font-size: 1.8rem;
     transition: all 0.3s;
+
     &:hover {
       scale: 1.1;
     }
@@ -557,6 +505,7 @@ onBeforeUnmount(() => {
   font-size: 1.2rem;
   font-weight: 600;
   color: var(--primary);
+
   .icon-icon1 {
     font-size: 1.8rem;
     color: var(--primary);
@@ -565,6 +514,7 @@ onBeforeUnmount(() => {
 
 .mobile-recommend {
   position: relative;
+
   .recommend-title {
     position: absolute;
     top: 0;
@@ -573,11 +523,13 @@ onBeforeUnmount(() => {
     font-weight: 600;
     color: var(--font-color);
   }
+
   .card {
     width: 100%;
     height: 8rem;
     overflow: hidden;
   }
+
   .title {
     display: inline-block;
     width: 80%;
@@ -588,6 +540,7 @@ onBeforeUnmount(() => {
     white-space: nowrap;
     overflow: hidden;
   }
+
   .image {
     width: 100%;
     height: 6rem;
@@ -605,6 +558,7 @@ onBeforeUnmount(() => {
 a {
   text-decoration: underline;
 }
+
 @media screen and (min-width: 768px) {
   .mobile-recommend {
     display: none;

@@ -12,7 +12,7 @@ export const getNotifylist = (data) => {
 /** 阅读消息列表 */
 export const updateNotify = (id) => {
   return new Promise((resolve, reject) => {
-    http.put("/api/notify/update/" + id, {}).then((res) => {
+    http.put(`/api/notify/update/${id}/`, {}).then((res) => {
       resolve(res);
     });
   });
@@ -21,7 +21,7 @@ export const updateNotify = (id) => {
 /** 删除消息列表 */
 export const deleteNotify = (id) => {
   return new Promise((resolve, reject) => {
-    http.put("/api/notify/delete/" + id, {}).then((res) => {
+    http.put(`/api/notify/delete/${id}/`, {}).then((res) => {
       resolve(res);
     });
   });

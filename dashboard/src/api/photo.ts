@@ -25,7 +25,7 @@ export const getAlbumList = data => {
 export const deleteAlbum = id => {
   return http.request<photoResult>(
     "delete",
-    "/api/photoAlbum/delete/" + id,
+    `/api/photoAlbum/delete/${id}/`,
     {}
   );
 };

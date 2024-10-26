@@ -86,8 +86,7 @@ const getAllTags = async () => {
 // 计算出网站运行天数
 const calcRuntimeDays = (time) => {
   if (time) {
-    // 将时间中的 '/' 替换为 '-' 以符合 ISO 标准
-    time = time.replace(/\//g, "-");
+    time = time.replace(/-/g, "/"); // 解决ios系统上格式化时间出现NAN的bug
     const now = new Date().getTime();
     const created = new Date(time).getTime();
     // 检查是否为有效日期

@@ -20,6 +20,7 @@ declare module 'vue' {
     CommentInput: typeof import('./src/components/Comment/item/CommentInput.vue')['default']
     Controls: typeof import('./src/components/Music/controls/index.vue')['default']
     CustomMusicList: typeof import('./src/components/Music/list/components/custom-music-list.vue')['default']
+    ElAffix: typeof import('element-plus/es')['ElAffix']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElBadge: typeof import('element-plus/es')['ElBadge']
     ElButton: typeof import('element-plus/es')['ElButton']

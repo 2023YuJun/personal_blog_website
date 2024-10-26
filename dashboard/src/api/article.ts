@@ -27,7 +27,7 @@ export const editArticle = (data?: object) => {
 export const deleteArticle = (id, status) => {
   return http.request<ArticleResult>(
     "delete",
-    `/api/article/delete/${id}/${status}`,
+    `/api/article/delete/${id}/${status}/`,
     {}
   );
 };
@@ -36,21 +36,21 @@ export const deleteArticle = (id, status) => {
 export const updateArticleTop = (id, is_top) => {
   return http.request<ArticleResult>(
     "put",
-    `/api/article/updateTop/${id}/${is_top}`,
+    `/api/article/updateTop/${id}/${is_top}/`,
     {}
   );
 };
 
 /** 恢复文章 */
 export const revertArticle = id => {
-  return http.request<ArticleResult>("put", `/api/article/revert/${id}`, {});
+  return http.request<ArticleResult>("put", `/api/article/revert/${id}/`, {});
 };
 
 /** 公开或隐藏文章 1 公开 2 私密 */
 export const isArticlePublic = (id, status) => {
   return http.request<ArticleResult>(
     "put",
-    `/api/article/isPublic/${id}/${status}`,
+    `/api/article/isPublic/${id}/${status}/`,
     {}
   );
 };
