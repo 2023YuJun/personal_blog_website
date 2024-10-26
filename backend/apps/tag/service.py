@@ -97,8 +97,7 @@ def get_tag_dictionary():
     字典，用于反显tag
     """
     tags = Tag.objects.values('id', 'tag_name')
-    tag_dict = {tag['id']: tag['tag_name'] for tag in tags}
-    return tag_dict
+    return tags if tags else None
 
 
 def get_tag_count():
