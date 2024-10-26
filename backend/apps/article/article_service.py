@@ -1,10 +1,10 @@
+import json
+
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, F
 from .serializers import *
 from django.utils import timezone
-from apps.article.articleTag_service import delete_article_tag, get_tag_list_by_article_id, get_article_id_list_by_tag_id
-from apps.category.service import get_category_name_by_id
-from apps.user.service import get_author_name_by_id
+from apps.article.articleTag_service import delete_article_tag, get_article_id_list_by_tag_id
 from utils.result import ERRORCODE, throw_error
 from rest_framework.response import Response
 
@@ -46,11 +46,11 @@ def update_article(article_data):
             current_time = timezone.localtime()
             article = Article.objects.get(pk=article_data['id'])
             for attr, value in article_data.items():
-                setattr(article, attr, value)
+                if attr not in ['createdAt', 'updatedAt']:
+                    setattr(article, attr, value)
             article.updatedAt = current_time
-            res = article.save()
-            res = ArticleSerializer(res, many=True).data
-            return res
+            article.save()
+            return ArticleSerializer(article).data
     except Article.DoesNotExist:
         return None
     except Exception as e:
@@ -70,11 +70,12 @@ def delete_article(article_id, status):
     删除文章
     """
     if status != 3:
-        return Article.objects.filter(id=article_id).update(status=3) > 0
+        updated_count = Article.objects.filter(id=article_id).update(status=3)
+        return updated_count > 0
     else:
         with transaction.atomic():
-            delete_article_tag(article_id)
-            return Article.objects.filter(id=article_id).delete() > 0
+            deleted_count, _ = Article.objects.filter(id=article_id).delete()
+            return deleted_count > 0
 
 
 def revert_article(article_id):
@@ -118,10 +119,11 @@ def get_article_list(params):
         query &= Q(createdAt__range=params['create_time'])
     if 'is_top' in params and params['is_top'] is not None:
         query &= Q(is_top=params['is_top'])
-    if 'status' in params and params['status'] is not None:
-        query &= Q(status=params['status'])
+    status = params.get('status')
+    if isinstance(status, int) and status in range(1, 4):
+        query &= Q(status=status)
     else:
-        query &= Q(status__in=[1, 2])
+        query &= Q(status__in=[1, 2, 3])
     if 'category_id' in params and params['category_id'] is not None:
         query &= Q(category_id=params['category_id'])
 
@@ -134,11 +136,6 @@ def get_article_list(params):
     # 获取文章列表
     articles = Article.objects.filter(query).exclude(article_content__in=["", None]).order_by('-createdAt')[offset:offset + size]
     total_count = Article.objects.filter(query).count()
-
-    # 根据文章id获取文章的标签名称和分类名称
-    for article in articles:
-        article.category_name = get_category_name_by_id(article.category_id)
-        article.tag_name_list = get_tag_list_by_article_id(article.id)
 
     articles = ArticleSerializer(articles, many=True).data
     return {
@@ -153,15 +150,13 @@ def get_article_by_id(article_id):
     """
     根据文章id获取文章详细信息
     """
-    article = Article.objects.get(pk=article_id)
+    article = Article.objects.filter(pk=article_id).first()
     if article:
-        article.increment('view_times', by=1)
-        article.tag_id_list = get_tag_list_by_article_id(article_id)
-        article.category_name = get_category_name_by_id(article.category_id)
-        article.author_name = get_author_name_by_id(article.author_id)
+        Article.objects.filter(pk=article_id).update(view_times=F('view_times') + 1)
+        article = ArticleSerializer(article).data
         return article
-    return None
 
+    return None
 
 def blog_home_get_article_list(current, size):
     """
@@ -170,10 +165,6 @@ def blog_home_get_article_list(current, size):
     offset = (current - 1) * size
     articles = Article.objects.filter(status=1).order_by('is_top', 'order', '-createdAt')[offset:offset + size]
     total_count = Article.objects.filter(status=1).count()
-
-    for article in articles:
-        article.category_name = get_category_name_by_id(article.category_id)
-        article.tag_name_list = get_tag_list_by_article_id(article.id)
 
     articles = ArticleSerializer(articles, many=True).data
     return {
@@ -199,8 +190,7 @@ def blog_timeline_get_article_list(current, size):
             result_list[year] = []
         result_list[year].append(article)
 
-    final = [{'year': key.replace('year_', ''), 'articleList': value} for key, value in result_list.items()]
-
+    final = [{'year': key.replace('year_', ''), 'articleList': ArticleSerializer(value, many=True).data} for key, value in result_list.items()]
     return {
         'current': current,
         'size': size,
@@ -257,15 +247,19 @@ def get_recommend_article_by_id(article_id):
     if not content_next:
         content_next = Article.objects.get(pk=article_id)
 
-    tag_id_list = get_tag_list_by_article_id(article_id)
+    tag_id_list = get_tag_list_by_article_id(article_id).get('tag_id_list', [])
     article_id_list = get_article_id_list_by_tag_id(tag_id_list)
 
     recommend = Article.objects.filter(id__in=article_id_list, status=1).order_by('-createdAt')[:6]
 
+    serialized_previous = ArticleSerializer(context_previous).data if context_previous else None
+    serialized_next = ArticleSerializer(content_next).data if content_next else None
+    serialized_recommend = ArticleSerializer(recommend, many=True).data
+
     return {
-        'previous': context_previous,
-        'next': content_next,
-        'recommend': recommend,
+        'previous': serialized_previous,
+        'next': serialized_next,
+        'recommend': serialized_recommend,
     }
 
 
@@ -307,7 +301,7 @@ def article_like(article_id):
     """
     article = Article.objects.get(pk=article_id)
     if article:
-        article.increment('thumbs_up_times', by=1)
+        Article.objects.filter(pk=article_id).update(thumbs_up_times=F('thumbs_up_times') + 1)
         return True
     return False
 
@@ -318,7 +312,7 @@ def cancel_article_like(article_id):
     """
     article = Article.objects.get(pk=article_id)
     if article:
-        article.decrement('thumbs_up_times', by=1)
+        Article.objects.filter(pk=article_id).update(thumbs_up_times=F('thumbs_up_times') - 1)
         return True
     return False
 
@@ -328,8 +322,7 @@ def add_reading_duration(article_id, duration):
     文章增加阅读时长
     """
     try:
-        article = Article.objects.get(pk=article_id)
-        article.increment('reading_duration', by=duration)
+        Article.objects.filter(pk=article_id).update(reading_duration=F('reading_duration') + duration)
         return True
     except Article.DoesNotExist:
         return False
@@ -383,14 +376,15 @@ def update_judge_title_exist(request):
 
 
 def verify_top_param(id, is_top):
-    if not id.isdigit() or not is_top.isdigit():
+    if not isinstance(id, int) or not isinstance(is_top, int):
         return Response(throw_error(error_code, "参数只能为数字"), status=400)
 
     return None
 
 
 def verify_del_param(id, status):
-    if not id.isdigit() or not status.isdigit():
+    if not isinstance(id, int) or not isinstance(status, int):
         return Response(throw_error(error_code, "参数只能为数字"), status=400)
 
     return None
+

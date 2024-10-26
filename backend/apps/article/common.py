@@ -1,6 +1,6 @@
-from .models import ArticleTag
+from django.utils import timezone
 from apps.article.articleTag_service import create_article_tags
-from apps.category.service import  get_one_category, create_category
+from apps.category.service import get_one_category, create_category
 from apps.tag.service import get_one_tag, create_tag
 
 
@@ -34,8 +34,14 @@ def create_article_tag_by_article_id(article_id, tag_list):
 
     # 文章id和标签id关联
     if article_id:
+        current_time = timezone.localtime()
         article_tag_list = [
-            ArticleTag(article_id=article_id, tag_id=tag['id']) for tag in tag_list
+            {
+                'article_id': article_id,
+                'tag_id': tag['id'],
+                'createdAt':current_time,
+                'updatedAt': current_time,
+            } for tag in tag_list
         ]
         # 批量新增文章标签关联
         result_list = create_article_tags(article_tag_list)

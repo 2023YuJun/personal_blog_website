@@ -83,12 +83,12 @@ def get_tag_by_tag_id_list(tag_id_list):
     """
     根据tag_id列表获取tag列表
     """
-    res = Tag.objects.filter(id__in=tag_id_list).values('id', 'tag_name')
-    tag_name_list = [v['tag_name'] for v in res]
+    tag_list = Tag.objects.filter(id__in=tag_id_list).values('id', 'tag_name')
+    tag_name_list = [v['tag_name'] for v in tag_list]
 
     return {
         "tagNameList": tag_name_list,
-        "tagList": res,
+        "tagList": tag_list,
     }
 
 

@@ -30,7 +30,9 @@ def get_tag_list_by_article_id(article_id):
     """
     res = ArticleTag.objects.filter(article_id=article_id).values_list('tag_id', flat=True)
     tag_id_list = list(res)
-    tag_name_list, tag_list = get_tag_by_tag_id_list(tag_id_list)
+    result = get_tag_by_tag_id_list(tag_id_list)
+    tag_name_list = result.get("tagNameList", [])
+    tag_list = result.get("tagList", [])
 
     return {
         'tag_list': tag_list,
@@ -39,14 +41,14 @@ def get_tag_list_by_article_id(article_id):
     }
 
 
-def get_article_id_list_by_tag_id(tag_id):
+def get_article_id_list_by_tag_id(tag_ids):
     """
     根据标签id获取该标签下所有的文章id
     """
-    res = ArticleTag.objects.filter(tag_id=tag_id).values_list('article_id', flat=True)
+    res = ArticleTag.objects.filter(tag_id__in=tag_ids).values_list('article_id', flat=True)
     article_id_list = list(set(res))  # 去重
 
-    return article_id_list if article_id_list else None
+    return article_id_list
 
 
 def get_one_article_tag(article_id, tag_id):

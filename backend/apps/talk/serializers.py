@@ -8,6 +8,8 @@ class TalkSerializer(serializers.ModelSerializer):
     talkImgList = serializers.SerializerMethodField()
     nick_name = serializers.SerializerMethodField()
     avatar = serializers.SerializerMethodField()
+    createdAt = serializers.SerializerMethodField()
+    updatedAt = serializers.SerializerMethodField()
 
     class Meta:
         model = Talk
@@ -28,6 +30,12 @@ class TalkSerializer(serializers.ModelSerializer):
         # 从用户模型获取用户的头像
         user_info = get_one_user_info({'id': obj.user_id})
         return user_info.avatar if user_info else None
+
+    def get_createdAt(self, obj):
+        return obj.createdAt.strftime('%Y-%m-%d %H:%M:%S')
+
+    def get_updatedAt(self, obj):
+        return obj.updatedAt.strftime('%Y-%m-%d %H:%M:%S')
 
 
 class TalkPhotoSerializer(serializers.ModelSerializer):

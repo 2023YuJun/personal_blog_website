@@ -29,10 +29,10 @@ class ArticleView(APIView):
         is_top = kwargs.get('is_top')
         status = kwargs.get('status')
         duration = kwargs.get('duration')
-        if 'update' in request.path:
-            return self.update_article(request)
-        elif 'updateTop' in request.path:
+        if 'updateTop' in request.path:
             return self.update_top(request, id, is_top)
+        elif 'update' in request.path:
+            return self.update_article(request)
         elif 'revert' in request.path:
             return self.revert_article(request, id)
         elif 'isPublic' in request.path:
@@ -113,7 +113,7 @@ class ArticleView(APIView):
                     delete_minio_imgs([old_cover.split("/")[-1]])
 
                 delete_article_tag(data["id"])
-                data["category_id"] = create_category_or_return(category["id"], category["category_name"])
+                data["category_id"] = create_category_or_return(category["category_name"], category["id"])
                 new_article_tag_list = create_article_tag_by_article_id(data["id"], tag_list)
                 res = update_article(data)
                 if res:
@@ -129,22 +129,28 @@ class ArticleView(APIView):
 
     def update_top(self, request, id, is_top):
         try:
-            verify_top_param(id, is_top)
-            res = update_top(id, is_top)
-            return Response(result("修改文章置顶状态成功", res), status=200)
+            response = verify_top_param(id, is_top)
+            if response is None:
+                res = update_top(id, is_top)
+                return Response(result("修改文章置顶状态成功", res), status=200)
+            else:
+                return response
         except Exception as err:
             print(err)
             return Response(throw_error(error_code, "修改文章置顶状态失败"), status=400)
 
     def delete_article(self, request, id, status):
         try:
-            verify_del_param(id, status)
-            if int(status) == 3:
-                old_cover = get_article_cover_by_id(id)
-                delete_minio_imgs([old_cover.split("/")[-1]]) if old_cover else None
+            response = verify_del_param(id, status)
+            if response is None:
+                if int(status) == 3:
+                    old_cover = get_article_cover_by_id(id)
+                    delete_minio_imgs([old_cover.split("/")[-1]]) if old_cover else None
 
-            res = delete_article(id, status)
-            return Response(result("删除文章成功", res), status=200)
+                res = delete_article(id, status)
+                return Response(result("删除文章成功", res), status=200)
+            else:
+                return response
         except Exception as err:
             print(err)
             return Response(throw_error(error_code, "删除文章失败"), status=400)

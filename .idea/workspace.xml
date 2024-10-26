@@ -4,20 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01d6a626-47e0-4c13-8582-b462f8b63d5e" name="更改" comment="修复说说图片显示功能、说说新增功能问题">
+    <list default="true" id="01d6a626-47e0-4c13-8582-b462f8b63d5e" name="更改" comment="修复后台文章发布无法显示标签问题">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/article/articleTag_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/article/articleTag_service.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/apps/article/article_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/article/article_service.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/apps/article/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/article/common.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/article/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/article/serializers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/apps/article/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/article/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/apps/tag/service.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/tag/service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/talk/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/talk/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/talk/talkPhoto_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/talk/talkPhoto_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/talk/talk_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/talk/talk_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/talk/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/talk/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/backend/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/backend/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/middlewares.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/middlewares.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/utils/sensitive.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/utils/sensitive.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dashboard/src/api/article.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dashboard/src/api/article.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dashboard/src/api/photo.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dashboard/src/api/photo.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/components.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/api/article.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/article.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/api/chat.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/chat.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/api/home.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/home.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/api/notify.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/notify.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/api/tag.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/tag.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,26 +57,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "true",
-    "last_opened_file_path": "E:/personal_blog_website",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.stylelint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.stylelint": "E:\\personal_blog_website\\dashboard\\node_modules\\stylelint",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "ts.external.directory.path": "E:\\personal_blog_website\\dashboard\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/personal_blog_website&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.stylelint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.stylelint&quot;: &quot;E:\\personal_blog_website\\dashboard\\node_modules\\stylelint&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;E:\\personal_blog_website\\dashboard\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="默认任务">
@@ -93,7 +95,9 @@
       <workItem from="1728892752828" duration="3000" />
       <workItem from="1728929396442" duration="396000" />
       <workItem from="1728969123796" duration="10000" />
-      <workItem from="1729871911980" duration="1120000" />
+      <workItem from="1729871911980" duration="1727000" />
+      <workItem from="1729926467678" duration="1261000" />
+      <workItem from="1729950872430" duration="810000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1727894924909</created>
@@ -200,7 +204,28 @@
       <option name="project" value="LOCAL" />
       <updated>1729873043048</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="完善中间件请求响应限制逻辑，因异常响应暂时删除异步逻辑">
+      <created>1729873230103</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1729873230103</updated>
+    </task>
+    <task id="LOCAL-00017" summary="修复后台文章发布部分bug">
+      <created>1729873651047</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1729873651047</updated>
+    </task>
+    <task id="LOCAL-00018" summary="修复后台文章发布无法显示标签问题">
+      <created>1729926814399</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1729926814399</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -287,6 +312,9 @@
     <MESSAGE value="修复后台请求格式后台无法识别问题" />
     <MESSAGE value="修复后台和前端用户无法修改自身数据问题" />
     <MESSAGE value="修复说说图片显示功能、说说新增功能问题" />
-    <option name="LAST_COMMIT_MESSAGE" value="修复说说图片显示功能、说说新增功能问题" />
+    <MESSAGE value="完善中间件请求响应限制逻辑，因异常响应暂时删除异步逻辑" />
+    <MESSAGE value="修复后台文章发布部分bug" />
+    <MESSAGE value="修复后台文章发布无法显示标签问题" />
+    <option name="LAST_COMMIT_MESSAGE" value="修复后台文章发布无法显示标签问题" />
   </component>
 </project>
