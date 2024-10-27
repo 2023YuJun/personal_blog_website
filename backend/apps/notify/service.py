@@ -10,8 +10,9 @@ def create_notify(notify):
     """
     with transaction.atomic():
         current_time = timezone.localtime()
-        notify_instance = Notify.objects.create(**notify, createdAt=current_time, updatedAt=current_time)
-    return notify_instance
+        notify = Notify.objects.create(**notify, createdAt=current_time, updatedAt=current_time)
+        serialize_notify = NotifySerializer(notify, many=True).data
+    return serialize_notify
 
 
 def update_notify(id):

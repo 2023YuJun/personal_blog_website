@@ -1,10 +1,12 @@
+from django.db import transaction
+from django.db.models import F
+from django.utils import timezone
+
+from apps.like.service import get_is_like_by_id_and_type, get_is_like_by_ip_and_type
 from apps.talk.talkPhoto_service import publish_talk_photo, delete_talk_photo, get_photo_by_talk_id
 from apps.user.service import get_one_user_info
-from apps.like.service import get_is_like_by_id_and_type, get_is_like_by_ip_and_type
-from .serializers import TalkSerializer
 from .models import Talk
-from django.utils import timezone
-from django.db import transaction
+from .serializers import TalkSerializer
 
 
 def publish_talk(talk):
@@ -37,10 +39,14 @@ def update_talk(talk):
     """
     修改说说
     """
+    talk.pop('createdAt', None)
+    talk.pop('updatedAt', None)
     id = talk.get('id')
     current_time = timezone.localtime()
-    talk_img_list = talk.get('talkImgList', [])
-    res = Talk.objects.filter(id=id).update(**talk, updatedAt=current_time)
+    talk_img_list = talk.pop('talkImgList', [])
+    model_fields = {field.name for field in Talk._meta.get_fields()}
+    valid_talk = {key: value for key, value in talk.items() if key in model_fields}
+    res = Talk.objects.filter(id=id).update(**valid_talk, updatedAt=current_time)
 
     delete_talk_photo(id)
     img_list = [
@@ -97,20 +103,16 @@ def talk_like(id):
     """
     说说点赞
     """
-    talk = Talk.objects.get(id=id)
-    if talk:
-        talk.increment('like_times', by=1)
-    return bool(talk)
+    updated_count = Talk.objects.filter(pk=id).update(like_times=F('like_times') + 1)
+    return updated_count > 0
 
 
 def cancel_talk_like(id):
     """
     取消说说点赞
     """
-    talk = Talk.objects.get(id=id)
-    if talk:
-        talk.decrement('like_times', by=1)
-    return bool(talk)
+    updated_count = Talk.objects.filter(pk=id).update(like_times=F('like_times') - 1)
+    return updated_count > 0
 
 
 def get_talk_list(current, size, status):
@@ -144,10 +146,10 @@ def get_talk_by_id(id):
     res = Talk.objects.get(id=id)
     imgs = get_photo_by_talk_id(id)
 
-    return {
-        **res,
-        'talkImgList': [img.url for img in imgs],
-    }
+    talk_data = TalkSerializer(res).data
+    talk_data['talkImgList'] = [img['url'] for img in imgs]
+
+    return talk_data
 
 
 def blog_get_talk_list(current, size, user_id, ip):
@@ -186,4 +188,3 @@ def blog_get_talk_list(current, size, user_id, ip):
         'list': rows,
         'total': count,
     }
-

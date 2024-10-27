@@ -135,6 +135,9 @@ DATABASES = {
         'PORT': 3306,
         'USER': 'personal_website_adminer',
         'PASSWORD': '123456',
+        'OPTIONS': {
+            'charset': 'utf8mb4',       # 使得可以存储emoji字符
+        },
     }
 }
 

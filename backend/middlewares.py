@@ -87,7 +87,7 @@ class NeedAdminAuthNotNeedSuperMiddleware:
             'article/delete/',
             'article/revert/',
             'article/isPublic/',
-            'comment/delete/',
+            'comment/backDelete/',
             'links/backUpdate/',
             'links/delete/',
             'links/approve/',

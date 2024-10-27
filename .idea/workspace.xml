@@ -4,22 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01d6a626-47e0-4c13-8582-b462f8b63d5e" name="更改" comment="修复后台文章发布无法显示标签问题">
+    <list default="true" id="01d6a626-47e0-4c13-8582-b462f8b63d5e" name="更改" comment="修复点赞功能实现异常问题，优化点赞数据查询代码">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/article/articleTag_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/article/articleTag_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/article/article_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/article/article_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/article/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/article/common.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/article/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/article/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/article/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/article/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/tag/service.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/tag/service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dashboard/src/api/article.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dashboard/src/api/article.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dashboard/src/api/photo.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dashboard/src/api/photo.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/components.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/article.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/article.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/chat.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/chat.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/home.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/home.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/notify.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/notify.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/tag.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/tag.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/comment/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/comment/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/comment/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/comment/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/comment/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/comment/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/notify/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/notify/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/notify/service.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/notify/service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/notify/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/notify/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/talk/talk_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/talk/talk_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/backend/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/backend/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/middlewares.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/middlewares.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,6 +93,8 @@
       <workItem from="1729871911980" duration="1727000" />
       <workItem from="1729926467678" duration="1261000" />
       <workItem from="1729950872430" duration="810000" />
+      <workItem from="1729962897481" duration="395000" />
+      <workItem from="1730040541300" duration="646000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1727894924909</created>
@@ -225,7 +222,42 @@
       <option name="project" value="LOCAL" />
       <updated>1729926814399</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="修复部分前端和后台url无法被后端识别问题，以及部分组件编写逻辑问题">
+      <created>1729963119947</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1729963119947</updated>
+    </task>
+    <task id="LOCAL-00020" summary="通过将返回时间进行格式化解决后端响应的时区时间无法被前端识别问题，修复前端和后台文章相关功能以及显示出错问题">
+      <created>1729963280370</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1729963280370</updated>
+    </task>
+    <task id="LOCAL-00021" summary="修复部分路径无法被后端识别问题">
+      <created>1730040794513</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1730040794513</updated>
+    </task>
+    <task id="LOCAL-00022" summary="文章功能优化：优化部分代码表示，简化数据查询代码，修复部分数据获取格式问题">
+      <created>1730040933964</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1730040933964</updated>
+    </task>
+    <task id="LOCAL-00023" summary="修复点赞功能实现异常问题，优化点赞数据查询代码">
+      <created>1730041088528</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1730041088528</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -315,6 +347,11 @@
     <MESSAGE value="完善中间件请求响应限制逻辑，因异常响应暂时删除异步逻辑" />
     <MESSAGE value="修复后台文章发布部分bug" />
     <MESSAGE value="修复后台文章发布无法显示标签问题" />
-    <option name="LAST_COMMIT_MESSAGE" value="修复后台文章发布无法显示标签问题" />
+    <MESSAGE value="修复部分前端和后台url无法被后端识别问题，以及部分组件编写逻辑问题" />
+    <MESSAGE value="通过将返回时间进行格式化解决后端响应的时区时间无法被前端识别问题，修复前端和后台文章相关功能以及显示出错问题" />
+    <MESSAGE value="修复部分路径无法被后端识别问题" />
+    <MESSAGE value="文章功能优化：优化部分代码表示，简化数据查询代码，修复部分数据获取格式问题" />
+    <MESSAGE value="修复点赞功能实现异常问题，优化点赞数据查询代码" />
+    <option name="LAST_COMMIT_MESSAGE" value="修复点赞功能实现异常问题，优化点赞数据查询代码" />
   </component>
 </project>

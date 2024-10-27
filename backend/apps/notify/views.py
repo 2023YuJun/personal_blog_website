@@ -25,9 +25,9 @@ class NotifyView(APIView):
             notify_type = request.data['type']
             to_id = request.data['to_id']
             message = request.data['message']
-            create_notify(
+            res = create_notify(
                 {'user_id': user_id, 'type': notify_type, 'to_id': to_id, 'message': message})
-            return Response(result("新增消息通知成功"), status=status.HTTP_201_CREATED)
+            return Response(result("新增消息通知成功", res), status=status.HTTP_201_CREATED)
         except Exception as err:
             print(err)
             return Response(throw_error(error_code, "新增消息通知失败"), status=status.HTTP_400_BAD_REQUEST)

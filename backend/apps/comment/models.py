@@ -11,7 +11,7 @@ class Comment(models.Model):
     to_id = models.IntegerField(null=True, blank=True, verbose_name='被回复的人id')
     to_name = models.CharField(max_length=255, null=True, blank=True, verbose_name='被回复人的昵称')
     to_avatar = models.CharField(max_length=555, null=True, blank=True, verbose_name='被回复人的头像')
-    content = models.CharField(max_length=555, null=True, blank=True, verbose_name='评论内容')
+    content = models.TextField(null=True, blank=True, verbose_name='评论内容')
     thumbs_up = models.IntegerField(default=0, verbose_name='评论点赞数')
     createdAt = models.DateTimeField(null=True, blank=True, verbose_name='创建时间')
     updatedAt = models.DateTimeField(null=True, blank=True, verbose_name='更新时间')
