@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from apps.article.article_service import *
 from utils.minioUpload import delete_minio_imgs
 from utils.result import result, ERRORCODE, throw_error
+from .articleTag_service import delete_article_tag
 from .common import create_category_or_return, create_article_tag_by_article_id
 
 error_code = ERRORCODE['ARTICLE']

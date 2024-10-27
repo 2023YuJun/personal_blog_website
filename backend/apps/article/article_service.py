@@ -1,12 +1,11 @@
-import json
-
 from django.db import transaction
 from django.db.models import Q, F
-from .serializers import *
 from django.utils import timezone
-from apps.article.articleTag_service import delete_article_tag, get_article_id_list_by_tag_id
-from utils.result import ERRORCODE, throw_error
 from rest_framework.response import Response
+
+from apps.article.articleTag_service import get_article_id_list_by_tag_id
+from utils.result import ERRORCODE, throw_error
+from .serializers import *
 
 error_code = ERRORCODE['ARTICLE']
 
@@ -134,7 +133,8 @@ def get_article_list(params):
             query &= Q(id__in=article_ids)
 
     # 获取文章列表
-    articles = Article.objects.filter(query).exclude(article_content__in=["", None]).order_by('-createdAt')[offset:offset + size]
+    articles = Article.objects.filter(query).exclude(article_content__in=["", None]).order_by('-createdAt')[
+               offset:offset + size]
     total_count = Article.objects.filter(query).count()
 
     articles = ArticleSerializer(articles, many=True).data
@@ -157,6 +157,7 @@ def get_article_by_id(article_id):
         return article
 
     return None
+
 
 def blog_home_get_article_list(current, size):
     """
@@ -190,7 +191,8 @@ def blog_timeline_get_article_list(current, size):
             result_list[year] = []
         result_list[year].append(article)
 
-    final = [{'year': key.replace('year_', ''), 'articleList': ArticleSerializer(value, many=True).data} for key, value in result_list.items()]
+    final = [{'year': key.replace('year_', ''), 'articleList': ArticleSerializer(value, many=True).data} for key, value
+             in result_list.items()]
     return {
         'current': current,
         'size': size,
@@ -274,16 +276,17 @@ def get_article_list_by_content(content):
     """
     根据文章内容搜索文章
     """
-    articles = Article.objects.filter(article_content__icontains=content, status=1).order_by('-view_times')[:8]
+    articles = Article.objects.filter(article_content__icontains=content, status=1).order_by('view_times')[:8]
     result = []
     for article in articles:
         index = article.article_content.find(content)
         previous = max(0, index - 12)
         next = index + len(content) + 12
+        article_data = ArticleSerializer(article).data
         result.append({
-            'id': article.id,
+            'id': article_data['id'],
             'article_content': article.article_content[previous:next],
-            'article_title': article.article_title,
+            'article_title': article_data['article_title'],
         })
     return result
 
@@ -292,29 +295,24 @@ def get_hot_article():
     """
     获取热门文章
     """
-    return Article.objects.filter(status=1).order_by('-view_times')[:5]
+    hot_articles = Article.objects.filter(status=1).order_by('-view_times')[:5]
+    return ArticleSerializer(hot_articles, many=True).data
 
 
 def article_like(article_id):
     """
     文章点赞
     """
-    article = Article.objects.get(pk=article_id)
-    if article:
-        Article.objects.filter(pk=article_id).update(thumbs_up_times=F('thumbs_up_times') + 1)
-        return True
-    return False
+    updated_count = Article.objects.filter(pk=article_id).update(thumbs_up_times=F('thumbs_up_times') + 1)
+    return updated_count > 0
 
 
 def cancel_article_like(article_id):
     """
     取消文章点赞
     """
-    article = Article.objects.get(pk=article_id)
-    if article:
-        Article.objects.filter(pk=article_id).update(thumbs_up_times=F('thumbs_up_times') - 1)
-        return True
-    return False
+    updated_count = Article.objects.filter(pk=article_id).update(thumbs_up_times=F('thumbs_up_times') - 1)
+    return updated_count > 0
 
 
 def add_reading_duration(article_id, duration):
@@ -387,4 +385,3 @@ def verify_del_param(id, status):
         return Response(throw_error(error_code, "参数只能为数字"), status=400)
 
     return None
-
