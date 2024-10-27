@@ -21,7 +21,7 @@ export const applyComment = (data) => {
 /** 删除自己的评论 */
 export const deleteComment = (id, parent_id = 0) => {
   return new Promise((resolve, reject) => {
-    http.delete(`/api/comment/delete/${id}/${parent_id}`, {}).then((res) => {
+    http.delete(`/api/comment/delete/${id}/${parent_id}/`, {}).then((res) => {
       resolve(res);
     });
   });

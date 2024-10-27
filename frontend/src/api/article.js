@@ -66,7 +66,7 @@ export const getHotArticle = () => {
 /** 根据文章内容搜索文章*/
 export const getArticleByContent = (content) => {
   return new Promise((resolve, reject) => {
-    http.get("/api/article/getArticleListByContent/" + content, {}).then((res) => {
+    http.get(`/api/article/getArticleListByContent/${content}/`, {}).then((res) => {
       resolve(res);
     });
   });
