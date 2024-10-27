@@ -9,12 +9,14 @@ def update_config(config):
     更新或创建配置
     """
     config_id = config.get('id')
-
     model_fields = {field.name for field in Config._meta.get_fields()}
 
+    # 确保不包含 createdAt 和 updatedAt 字段
+    valid_config = {key: value for key, value in config.items() if key in model_fields and key not in ['createdAt', 'updatedAt']}
+
+    current_time = timezone.localtime()
+
     with transaction.atomic():
-        valid_config = {key: value for key, value in config.items() if key in model_fields}
-        current_time = timezone.localtime()
         res, created = Config.objects.get_or_create(
             id=config_id,
             defaults={**valid_config, 'createdAt': current_time, 'updatedAt': current_time}

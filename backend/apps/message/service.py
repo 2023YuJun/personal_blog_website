@@ -2,7 +2,7 @@ from apps.message.models import Message
 from apps.user.service import get_one_user_info
 from apps.like.service import get_is_like_by_ip_and_type, get_is_like_by_id_and_type
 from apps.comment.service import get_comment_total
-from django.db.models import Q
+from django.db.models import Q, F
 
 
 def add_message(message_data):
@@ -33,20 +33,16 @@ def message_like(id):
     """
     点赞留言
     """
-    message = Message.objects.filter(id=id).first()
-    if message:
-        message.increment("like_times", by=1)
-    return True if message else False
+    updated_count = Message.objects.filter(pk=id).update(like_times=F('like_times') + 1)
+    return updated_count > 0
 
 
 def cancel_message_like(id):
     """
     取消点赞留言
     """
-    message = Message.objects.filter(id=id).first()
-    if message:
-        message.decrement("like_times", by=1)
-    return True if message else False
+    updated_count = Message.objects.filter(pk=id).update(like_times=F('like_times') - 1)
+    return updated_count > 0
 
 
 def get_message_list(request):

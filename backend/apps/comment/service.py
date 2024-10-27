@@ -14,8 +14,12 @@ def create_comment(comment):
     """
     current_time = timezone.localtime()
     with transaction.atomic():
-        comment_obj = Comment.objects.create(defaults={**comment, 'createdAt': current_time, 'updatedAt': current_time})
-    return comment_obj
+        comment.pop('author_id', None)
+        comment.pop('createdAt', None)
+        comment.pop('updatedAt', None)
+        comment_obj = Comment.objects.create(**{**comment, 'createdAt': current_time, 'updatedAt': current_time})
+    serialize_comment = CommentSerializer(comment_obj).data
+    return serialize_comment
 
 
 def apply_comment(comment):
@@ -24,28 +28,28 @@ def apply_comment(comment):
     """
     current_time = timezone.localtime()
     with transaction.atomic():
-        comment_obj = Comment.objects.create(defaults={**comment, 'createdAt': current_time, 'updatedAt': current_time})
-    return comment_obj
+        comment.pop('author_id', None)
+        comment.pop('createdAt', None)
+        comment.pop('updatedAt', None)
+        comment_obj = Comment.objects.create(**{**comment, 'createdAt': current_time, 'updatedAt': current_time})
+    serialize_comment = CommentSerializer(comment_obj).data
+    return serialize_comment
 
 
 def comment_like(comment_id):
     """
     点赞评论
     """
-    comment = Comment.objects.filter(id=comment_id).first()
-    if comment:
-        comment = Comment.objects.filter(id=comment.id).update(thumbs_up=F('thumbs_up') + 1)
-    return comment
+    updated_count = Comment.objects.filter(id=comment_id).update(thumbs_up=F('thumbs_up') + 1)
+    return updated_count > 0
 
 
 def cancel_comment_like(comment_id):
     """
     取消点赞评论
     """
-    comment = Comment.objects.filter(id=comment_id).first()
-    if comment:
-        comment = Comment.objects.filter(id=comment.id).update(thumbs_up=F('thumbs_up') + 1)
-    return comment
+    updated_count = Comment.objects.filter(id=comment_id).update(thumbs_up=F('thumbs_up') - 1)
+    return updated_count > 0
 
 
 def delete_comment(comment_id, parent_id):
