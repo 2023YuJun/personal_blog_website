@@ -70,17 +70,14 @@ INSTALLED_APPS = [
     "apps.user",
 ]
 
-# 指定 ASGI 应用程序
-ASGI_APPLICATION = 'backend.asgi.application'     # 替换为项目名称
+ASGI_APPLICATION = 'backend.asgi.application'
 
-# 选择使用的 Channels 层（例如 Redis）
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer',  # 使用内存通道（可选）
-        # 如果使用 Redis，可以使用以下配置：
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
         # 'BACKEND': 'channels_redis.core.RedisChannelLayer',
         # 'CONFIG': {
-        #     "hosts": [("127.0.0.1", 6379)],  # 替换为您的 Redis 配置
+        #     "hosts": [("127.0.0.1", 6379)],
         # },
     },
 }
@@ -138,6 +135,7 @@ DATABASES = {
         'OPTIONS': {
             'charset': 'utf8mb4',       # 使得可以存储emoji字符
         },
+        'CONN_MAX_AGE': 60,
     }
 }
 

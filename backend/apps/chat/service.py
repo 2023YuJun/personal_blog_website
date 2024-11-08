@@ -1,5 +1,5 @@
-from apps.chat.models import Chat
-from apps.user.service import get_one_user_info
+from .models import Chat
+from .serializers import ChatSerializer
 from django.db.models import Q
 from django.utils import timezone
 
@@ -56,10 +56,10 @@ def get_chat_list(params):
     分页获取聊天列表（同步）
     """
     size = params.get('size', 10)
+    current = params.get('current', 1)
     last_id = params.get('last_id')
 
     where_opt = Q()
-    current = None
 
     # 构建查询条件
     if last_id:
@@ -77,17 +77,12 @@ def get_chat_list(params):
     chats = Chat.objects.filter(where_opt).order_by("-id")[:limit]
     count = Chat.objects.filter(where_opt).count()  # 同步计数
 
-    # 获取用户信息并赋值
-    for message in chats:
-        if message.user_id:
-            user = get_one_user_info({'id': message.user_id})  # 同步调用
-            message.nick_name = user.nick_name
-            message.avatar = user.avatar
-
     # 将聊天记录反转，并返回
+    reversed_chats = list(chats)[::-1]
+    serialized_chats = ChatSerializer(reversed_chats, many=True).data
     return {
         'current': current,
         'size': size,
         'total': count,
-        'list': list(chats)[::-1],
+        'list': serialized_chats,
     }

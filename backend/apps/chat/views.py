@@ -1,6 +1,5 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import status
 from apps.chat.service import *
 from utils.result import result, ERRORCODE, throw_error
 from utils.minioUpload import delete_minio_imgs
@@ -30,10 +29,10 @@ class ChatView(APIView):
         """新增聊天"""
         try:
             res = create_chat(request.data)
-            return Response(result("新增聊天成功", {"content": res.content}), status=status.HTTP_201_CREATED)
+            return Response(result("新增聊天成功", {"content": res.content}), status=201)
         except Exception as err:
             print(err)
-            return Response(throw_error(error_code, "新增聊天失败"), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(throw_error(error_code, "新增聊天失败"), status=500)
 
     def delete_chats(self, request):
         """删除聊天"""
@@ -44,10 +43,10 @@ class ChatView(APIView):
                 delete_minio_imgs(arr)
 
             res = delete_chats()
-            return Response(result("删除聊天成功", res), status=status.HTTP_200_OK)
+            return Response(result("删除聊天成功", res), status=200)
         except Exception as err:
             print(err)
-            return Response(throw_error(error_code, "删除聊天失败"), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(throw_error(error_code, "删除聊天失败"), status=500)
 
     def delete_one_chat(self, request, chat_id):
         """删除单条聊天记录"""
@@ -59,16 +58,16 @@ class ChatView(APIView):
                 delete_minio_imgs(arr)
 
             res = delete_one_chat(chat_id)
-            return Response(result("撤回聊天成功", res), status=status.HTTP_200_OK)
+            return Response(result("撤回聊天成功", res), status=200)
         except Exception as err:
             print(err)
-            return Response(throw_error(error_code, "撤回聊天失败"), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(throw_error(error_code, "撤回聊天失败"), status=500)
 
     def get_chat_list(self, request):
         """条件分页查找聊天列表"""
         try:
             res = get_chat_list(request.data)
-            return Response(result("分页查找聊天成功", res), status=status.HTTP_200_OK)
+            return Response(result("分页查找聊天成功", res), status=200)
         except Exception as err:
             print(err)
-            return Response(throw_error(error_code, "分页查找聊天失败"), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(throw_error(error_code, "分页查找聊天失败"), status=500)

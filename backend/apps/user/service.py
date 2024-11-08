@@ -220,27 +220,3 @@ def verify_update_password(username, current_password, new_password1, new_passwo
 
     return None
 
-
-# def decode_token(request, attribute=None):
-#     """
-#     从请求头中获取并解码 token，提取用户信息。
-#     如果提供了 attribute 参数，则返回指定属性的值；否则返回整个 payload。
-#     """
-#     auth_header = request.headers.get('Authorization')
-#     if not auth_header:
-#         raise ValueError("Authorization header is missing")
-#
-#     token = auth_header.split(' ')[-1]  # 提取 token 部分
-#     try:
-#         # 使用 JWT 解析 token
-#         decoded_token = jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
-#
-#         # 如果指定了属性名称，返回该属性的值；否则返回整个 payload
-#         if attribute:
-#             return decoded_token.get(attribute)
-#         return decoded_token
-#
-#     except jwt.ExpiredSignatureError:
-#         raise ValueError("Token has expired")
-#     except jwt.InvalidTokenError:
-#         raise ValueError("Invalid token")
