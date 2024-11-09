@@ -3,30 +3,46 @@ from apps.user.service import get_one_user_info
 from apps.like.service import get_is_like_by_ip_and_type, get_is_like_by_id_and_type
 from apps.comment.service import get_comment_total
 from django.db.models import Q, F
+from django.db import transaction
+from django.utils import timezone
+from .serializers import MessageSerializer
 
 
 def add_message(message_data):
     """
     发布留言
     """
-    Message.objects.create(**message_data)
-    return True
+    valid_fields = {field.name for field in Message._meta.get_fields()}
+    filtered_data = {key: value for key, value in message_data.items() if key in valid_fields and key != 'id'}
+    with transaction.atomic():
+        filtered_data['createdAt'] = timezone.localtime()
+        filtered_data['updatedAt'] = timezone.localtime()
+        message = Message.objects.create(**filtered_data)
+        res = MessageSerializer(message).data
+    return res
 
 
-def update_message(id, message):
+def update_message(id, message_data):
     """
     修改留言
     """
-    Message.objects.filter(id=id).update(message)
-    return True
+    valid_fields = {field.name for field in Message._meta.get_fields()}
+    filtered_data = {
+        key: value for key, value in message_data.items()
+        if key in valid_fields and key not in ['createdAt', 'updatedAt']
+    }
+    filtered_data['updatedAt'] = timezone.localtime()
+    with transaction.atomic():
+        updated_count = Message.objects.filter(id=id).update(**filtered_data)
+        return updated_count > 0
 
 
 def delete_message(id_list):
     """
     根据id列表删除留言
     """
-    res = Message.objects.filter(id__in=id_list).delete()
-    return res if res else None
+    deleted_count, _ = Message.objects.filter(id__in=id_list).delete()
+    return deleted_count > 0
 
 
 def message_like(id):
@@ -71,7 +87,6 @@ def get_message_list(request):
     rows = Message.objects.filter(where_opt).order_by("-createdAt")[offset:offset + size]
     total_count = Message.objects.filter(where_opt).count()
 
-    # 根据用户form_id获取用户当前的昵称和头像
     for row in rows:
         if row.user_id:
             user_info = get_one_user_info({"id": row.user_id})
@@ -81,7 +96,6 @@ def get_message_list(request):
             row.nick_name = ''
             row.avatar = ''
 
-    # 判断当前登录用户是否点赞了
     if user_id:
         for row in rows:
             row.is_like = get_is_like_by_id_and_type(row.id, 3, user_id)
@@ -89,7 +103,6 @@ def get_message_list(request):
         for row in rows:
             row.is_like = get_is_like_by_ip_and_type(row.id, 3, ip)
 
-    # 获取每一条的评论条数
     for row in rows:
         row.comment_total = get_comment_total(row.id, 3)
 
@@ -136,6 +149,5 @@ def get_message_tag():
                 tag_counts[tag] = 0
             tag_counts[tag] += 1
 
-    # 按照出现次数排序并返回前10个
     sorted_tags = sorted(tag_counts.items(), key=lambda item: item[1], reverse=True)
     return [{"tag": tag, "count": count} for tag, count in sorted_tags[:10]]

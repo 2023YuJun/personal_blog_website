@@ -2,7 +2,7 @@
 import { ref, onMounted, onBeforeUnmount, computed } from "vue";
 import { useRoute } from "vue-router";
 import { staticData } from "@/store/index.js";
-
+import { getSaying } from "@/api/home.js";
 import TypeWriter from "@/components/TypeWriter/type-writer";
 import Waves from "@/components/WelcomeComps/waves.vue";
 import { debounce } from "@/utils/tool";
@@ -14,10 +14,24 @@ const route = useRoute();
 const staticStore = staticData();
 const { getPageHeaderList } = storeToRefs(staticStore);
 
-const saying = ref(["不要止步不前！"]);
+const saying = ref([]);
 const showScrollBottom = ref(true);
 
 gsap.registerPlugin(ScrollTrigger);
+
+const fetchSaying = async () => {
+  try {
+    const response = await getSaying();
+    if (response.success) {
+      const sayingText = response.data?.content || "不要止步不前！";
+      saying.value = [sayingText]; // 赋值为字符串数组
+    } else {
+      console.error("获取句子失败:", response.message);
+    }
+  } catch (error) {
+    console.error("请求失败:", error);
+  }
+};
 
 const scrollToBottom = () => {
   const homeElement = document.querySelector("#home");
@@ -56,6 +70,7 @@ const getBgCover = computed(() => {
 
 onMounted(() => {
   initScrollEvent();
+  fetchSaying();
 
   gsap.to(".bg", {
     scrollTrigger: {
@@ -77,7 +92,7 @@ onBeforeUnmount(() => {
 <template>
   <div id="home">
     <el-image class="bg !w-[100%] !h-[100%]" fit="cover" :src="getBgCover"></el-image>
-    <div class="font">范同学的个人博客</div>
+    <div class="font">云间BLOG</div>
     <TypeWriter class="type-writer" size="1.2em" :typeList="saying"></TypeWriter>
     <Waves />
     <!-- <First /> -->

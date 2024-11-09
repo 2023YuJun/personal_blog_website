@@ -147,6 +147,14 @@ def get_user_count():
     return User.objects.count()
 
 
+def get_admin_info():
+    """
+    获取所有管理员信息
+    """
+    admin_users = User.objects.filter(role=1)
+    return list(admin_users)
+
+
 def admin_update_user_info(user_data):
     """
     管理员修改用户信息
@@ -219,4 +227,3 @@ def verify_update_password(username, current_password, new_password1, new_passwo
         return JsonResponse(throw_error(error_code, "admin密码只可以通过settings修改"), status=400)
 
     return None
-

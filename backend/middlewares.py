@@ -194,7 +194,7 @@ class SuperAdminAuthMiddleware:
             try:
                 user = jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
                 if user['username'] == 'admin':
-                    return JsonResponse({"message": "管理员信息只可通过配置信息修改"}, status=403)
+                    return JsonResponse({"message": "超级管理员信息只可通过配置信息修改"}, status=403)
             except jwt.ExpiredSignatureError:
                 print("token已过期")
                 return JsonResponse(throw_error(token_error_code, "token已过期"), status=401)

@@ -136,7 +136,7 @@ onBeforeUnmount(() => {
         </el-descriptions-item>
         <el-descriptions-item>
           <span class="desc-remark" style="text-shadow: none">
-            快来申请范同学的友链吧
+            快来申请云间的友链吧
             <span class="apply-button" @click="applyLinks">友链申请</span>
           </span>
         </el-descriptions-item>

@@ -1,8 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
 from apps.message.service import *
-from ..notify.views import NotifyView
+from apps.user.service import get_admin_info
+from ..notify.service import create_notify
 from utils.result import throw_error, result, ERRORCODE
 from utils.sensitive import filter_sensitive
 from utils.tool import random_nickname
@@ -38,90 +38,93 @@ class MessageView(APIView):
         try:
             user_id = request.data.get('user_id')
             message = request.data.get('message')
-            nick_name = request.data.get('nick_name', random_nickname("游客", 5))
+            request.data['nick_name'] = request.data.get('nick_name', random_nickname("游客", 5))
+            filtered_message = filter_sensitive(message)
+            request.data['message'] = filtered_message
+            res = add_message(request.data)
+            user_info = get_one_user_info({'id': user_id})
+            user_role = user_info.role if user_info else 2
 
-            message = filter_sensitive(message)
-            res = add_message({
-                'nick_name': nick_name,
-                'user_id': user_id,
-                'message': message,
-            })
+            if user_role != 1:
+                admin_users = get_admin_info()
+                for admin in admin_users:
+                    create_notify({
+                        'user_id': admin['id'],
+                        'type': 3,
+                        'to_id': user_id,
+                        'message': f'您收到了来自于：{request.data["nick_name"]} 的留言: {filtered_message}！',
+                    })
 
-            if user_id != 1:
-                NotifyView.add_notify({
-                    'user_id': 1,
-                    'type': 3,
-                    'message': f'您收到了来自于：{nick_name} 的留言: {message}！',
-                })
-
-            return Response(result("发布成功", res), status=status.HTTP_200_OK)
+            return Response(result("发布成功", res), status=201)
         except Exception as err:
             print(err)
-            return Response(throw_error(error_code, "发布失败"), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(throw_error(error_code, "发布失败"), status=500)
 
     def update_message(self, request):
         try:
-            message = request.data.get('message')
-            message = filter_sensitive(message)
             id = request.data.get('id')
-            res = update_message(id, message)
-
-            return Response(result("修改成功", res), status=status.HTTP_200_OK)
+            message_data = request.data
+            message_data['message'] = filter_sensitive(message_data.get('message', ''))
+            res = update_message(id, message_data)
+            if res:
+                return Response(result("修改成功", res), status=200)
+            else:
+                return Response(throw_error(error_code, "未找到对应的留言，修改失败"), status=404)
         except Exception as err:
             print(err)
-            return Response(throw_error(error_code, "修改失败"), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(throw_error(error_code, "修改失败"), status=500)
 
     def delete_message(self, request):
         try:
-            id_list = request.data.get('idList')
+            id_list = request.data.get('idList', [])
             res = delete_message(id_list)
 
-            return Response(result("删除留言成功", res), status=status.HTTP_200_OK)
+            return Response(result("删除留言成功", res), status=200)
         except Exception as err:
             print(err)
-            return Response(throw_error(error_code, "删除留言失败"), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(throw_error(error_code, "删除留言失败"), status=500)
 
     def message_like(self, request, id):
         try:
             res = message_like(id)
 
-            return Response(result("留言点赞成功", res), status=status.HTTP_200_OK)
+            return Response(result("留言点赞成功", res), status=200)
         except Exception as err:
             print(err)
-            return Response(throw_error(error_code, "留言点赞失败"), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(throw_error(error_code, "留言点赞失败"), status=500)
 
     def cancel_message_like(self, request, id):
         try:
             res = cancel_message_like(id)
 
-            return Response(result("取消留言点赞成功", res), status=status.HTTP_200_OK)
+            return Response(result("取消留言点赞成功", res), status=200)
         except Exception as err:
             print(err)
-            return Response(throw_error(error_code, "取消留言点赞失败"), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(throw_error(error_code, "取消留言点赞失败"), status=500)
 
     def get_message_list(self, request):
         try:
 
             res = get_message_list(request)
 
-            return Response(result("分页获取留言成功", res), status=status.HTTP_200_OK)
+            return Response(result("分页获取留言成功", res), status=200)
         except Exception as err:
             print(err)
-            return Response(throw_error(error_code, "分页获取留言失败"), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(throw_error(error_code, "分页获取留言失败"), status=500)
 
     def get_all_message(self, request):
         try:
             res = get_all_message()
-            return Response(result("获取留言成功", res), status=status.HTTP_200_OK)
+            return Response(result("获取留言成功", res), status=200)
         except Exception as err:
             print(err)
-            return Response(throw_error(error_code, "获取留言失败"), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(throw_error(error_code, "获取留言失败"), status=500)
 
     def get_message_tag(self, request):
         try:
             res = get_message_tag()
-            return Response(result("获取留言所有标签成功", res), status=status.HTTP_200_OK)
+            return Response(result("获取留言所有标签成功", res), status=200)
         except Exception as err:
             print(err)
             return Response(throw_error(error_code, "获取留言所有标签失败"),
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                            status=500)

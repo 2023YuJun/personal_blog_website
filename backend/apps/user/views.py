@@ -63,11 +63,11 @@ class UserView(APIView):
                     if username == "admin":
                         if password == settings.ADMIN_PASSWORD:
                             token = jwt.encode(
-                                {"nick_name": "超级管理员", "id": 5201314, "role": 1, "username": "admin"},
+                                {"nick_name": "超级管理员", "id": 10111111, "role": 1, "username": "admin"},
                                 settings.JWT_SECRET, algorithm="HS256")
                             return JsonResponse(result("超级管理员登录成功",
                                                        {"token": token, "username": "超级管理员", "role": 1,
-                                                        "id": 5201314}))
+                                                        "id": 10111111}))
                         else:
                             return JsonResponse(throw_error(error_code, "密码错误"), status=400)
                     else:
@@ -151,8 +151,8 @@ class UserView(APIView):
     def get_user_info(self, request, id):
         """根据用户id获取当前登录人信息"""
         try:
-            if id == 5201314:
-                return Response(result("获取用户信息成功", {"id": 5201314, "role": 1, "nick_name": "超级管理员"}))
+            if id == 10111111:
+                return Response(result("获取用户信息成功", {"id": 10111111, "role": 1, "nick_name": "超级管理员"}))
             else:
                 res = get_one_user_info({"id": id})
                 ip_address = get_ip_address()

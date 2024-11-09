@@ -35,3 +35,15 @@ export const getSentence = (ColaKey) => {
       });
   });
 };
+
+export const getSaying = () => {
+  return new Promise((resolve, reject) => {
+    http
+      .get("https://api.vvhan.com/api/ian/rand?type=json", {
+        withCredentials: false,
+      })
+      .then((res) => {
+        resolve(res);
+      });
+  });
+};
