@@ -86,30 +86,12 @@ def get_message_list(request):
 
     rows = Message.objects.filter(where_opt).order_by("-createdAt")[offset:offset + size]
     total_count = Message.objects.filter(where_opt).count()
-
-    for row in rows:
-        if row.user_id:
-            user_info = get_one_user_info({"id": row.user_id})
-            row.nick_name = user_info.get('nick_name', '')
-            row.avatar = user_info.get('avatar', '')
-        else:
-            row.nick_name = ''
-            row.avatar = ''
-
-    if user_id:
-        for row in rows:
-            row.is_like = get_is_like_by_id_and_type(row.id, 3, user_id)
-    else:
-        for row in rows:
-            row.is_like = get_is_like_by_ip_and_type(row.id, 3, ip)
-
-    for row in rows:
-        row.comment_total = get_comment_total(row.id, 3)
+    serializer_rows = MessageSerializer(rows, many=True).data
 
     return {
         "current": current,
         "size": size,
-        "list": rows,
+        "list": serializer_rows,
         "total": total_count,
     }
 
