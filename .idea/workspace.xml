@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01d6a626-47e0-4c13-8582-b462f8b63d5e" name="更改" comment="重写聊天室功能，实现websocket连接，解决多线程导致数据库连接失效问题">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="01d6a626-47e0-4c13-8582-b462f8b63d5e" name="更改" comment="重新修改每日一句编写方式，完善留言功能" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -88,6 +86,7 @@
       <workItem from="1730040541300" duration="771000" />
       <workItem from="1730042941184" duration="4000" />
       <workItem from="1731094322596" duration="363000" />
+      <workItem from="1731145705427" duration="274000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1727894924909</created>
@@ -264,7 +263,14 @@
       <option name="project" value="LOCAL" />
       <updated>1731094521973</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="重新修改每日一句编写方式，完善留言功能">
+      <created>1731145924912</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1731145924912</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -306,7 +312,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="github/master" />
+                        <option value="master" />
                       </list>
                     </value>
                   </entry>
@@ -356,6 +362,7 @@
     <MESSAGE value="修复点赞功能实现异常问题，优化点赞数据查询代码" />
     <MESSAGE value="修复评论无法存储emoji字符问题（需要使用utf8mb4编码），优化通知逻辑，优化点赞数据更新逻辑，修改存储评论字段为长字段" />
     <MESSAGE value="重写聊天室功能，实现websocket连接，解决多线程导致数据库连接失效问题" />
-    <option name="LAST_COMMIT_MESSAGE" value="重写聊天室功能，实现websocket连接，解决多线程导致数据库连接失效问题" />
+    <MESSAGE value="重新修改每日一句编写方式，完善留言功能" />
+    <option name="LAST_COMMIT_MESSAGE" value="重新修改每日一句编写方式，完善留言功能" />
   </component>
 </project>
