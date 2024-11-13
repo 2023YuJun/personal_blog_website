@@ -92,7 +92,7 @@ onBeforeUnmount(() => {
 <template>
   <div id="home">
     <el-image class="bg !w-[100%] !h-[100%]" fit="cover" :src="getBgCover"></el-image>
-    <div class="font">云间BLOG</div>
+    <div class="font">醨涧BLOG</div>
     <TypeWriter class="type-writer" size="1.2em" :typeList="saying"></TypeWriter>
     <Waves />
     <!-- <First /> -->

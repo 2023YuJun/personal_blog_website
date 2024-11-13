@@ -19,7 +19,7 @@ export const getConfigDetail = () => {
 export const getCommitList = () => {
   return http.request<Array<object>>(
     "get",
-    `/gitee/contribution_timeline?url=%2FYuJun2024%2Fcontribution_timeline&scope=my&day=&start_date=&end_date=&year=&limit=20&prev_id=&_=${new Date().getTime()}/`
+    `/gitee/contribution_timeline?url=%2FYuJun2024%2Fcontribution_timeline&scope=my&day=&start_date=&end_date=&year=&limit=20&prev_id=&_=${new Date().getTime()}`
   );
 };
 

@@ -175,7 +175,7 @@ export function numberFormate(number) {
 export function getWelcomeSay(nickName) {
   let res;
   if (!nickName) {
-    res = "欢迎来到云间BLOG";
+    res = "欢迎来到醨涧BLOG";
     return res;
   }
   const now = new Date().getHours();
