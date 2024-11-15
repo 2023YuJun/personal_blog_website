@@ -1,10 +1,9 @@
 <script setup>
-import { ref, h, nextTick, watch, onBeforeUnmount, onMounted } from "vue";
+import { ref, h, nextTick, watch, onBeforeUnmount } from "vue";
 import { user } from "@/store/index";
 import { ElNotification, ElMessageBox } from "element-plus";
 import { storeToRefs } from "pinia";
 import { Connection } from "@element-plus/icons-vue";
-import { getChatList, clearChat, deleteOneChat } from "@/api/chat";
 import { imgUpload } from "@/api/user";
 
 import { UploadFilled } from "@element-plus/icons-vue";
@@ -90,7 +89,7 @@ const wsSend = () => {
         type: "message",
         user_id: getUserInfo.value.id,
         content: yourImageUrl.value,
-        content_type: "image", // 信息是文本
+        content_type: "image", // 信息是图片
       };
       websocket.send(JSON.stringify(message));
       yourImageUrl.value = "";
@@ -133,6 +132,10 @@ const initWebsocket = async (isReconnect = false) => {
           reConnect();
         }
       }, 30000);
+
+      // 获取消息列表
+      getMessageList();
+
     };
     websocket.onmessage = (event) => {
       if (event.data) {
@@ -155,10 +158,47 @@ const initWebsocket = async (isReconnect = false) => {
             }
 
             break;
+          case "onlineList":
+            onlineList.value = data.list;
+            index = onlineList.value.findIndex((item) => item.user_id === getUserInfo.value.id);
+            if (index === -1) {
+              clearWebsocket();
+            }
+            break;
+          case "getChatList":  // 处理获取聊天记录的响应
+            if (data.code === 0) {
+              const list = data.result.list;
+
+              if (messageList.value.length > 0) {
+                if (Array.isArray(list) && list.length) {
+                  messageList.value = list.concat(messageList.value);
+                  if (list.length === 10) {
+                    canLoadMore.value = true;
+                  } else {
+                    canLoadMore.value = false;
+                  }
+                } else {
+                  canLoadMore.value = false;
+                }
+              } else {
+                if (Array.isArray(list) && list.length) {
+                  messageList.value = list;
+                  if (list.length === 10) {
+                    canLoadMore.value = true;
+                  } else {
+                    canLoadMore.value = false;
+                  }
+                } else {
+                  canLoadMore.value = false;
+                }
+              }
+              loadingMessage.value = false;
+            }
+            break;
           case "message":
-            if (data.content) {
-              messageList.value.push(data);
-              if (data.user_id !== getUserInfo.value.id) {
+            if (data.result.content) {
+              messageList.value.push(data.result);
+              if (data.result.user_id !== getUserInfo.value.id) {
                 newMessageCount.value++;
               }
               nextTick(() => {
@@ -167,17 +207,48 @@ const initWebsocket = async (isReconnect = false) => {
             }
 
             break;
-          case "onlineList":
-            onlineList.value = data.list;
-            index = onlineList.value.findIndex((item) => item.user_id === getUserInfo.value.id);
-            if (index === -1) {
-              clearWebsocket();
+
+          case "revert":
+            if (data.code === 0) {
+              index = messageList.value.findIndex((item) => item.id === data.result.message_id);
+              if (index !== -1) {
+                messageList.value.splice(index, 1);
+              }
+              ElNotification({
+                offset: 60,
+                title: "提示",
+                duration: 3000,
+                message: h("div", { style: "color: #7ec050; font-weight: 600;" }, "撤回成功"),
+              });
+            }
+            else {
+              ElNotification({
+                offset: 60,
+                title: "提示",
+                duration: 3000,
+                message: h("div", { style: "color: #f56c6c; font-weight: 600;" }, `${data.message}`),
+              });
             }
             break;
-          case "revert":
-            index = messageList.value.findIndex((item) => item.id === data.message_id);
-            if (index !== -1) {
-              messageList.value.splice(index, 1);
+          case "clearHistory":
+            if (data.code === 0) {
+              messageList.value = [];
+              canLoadMore.value = false;
+
+              ElNotification({
+                offset: 60,
+                title: "提示",
+                duration: 3000,
+                message: h("div", { style: "color: #7ec050; font-weight: 600;" }, "聊天记录已清空"),
+              });
+            }
+            else {
+              ElNotification({
+                offset: 60,
+                title: "提示",
+                duration: 3000,
+                message: h("div", { style: "color: #f56c6c; font-weight: 600;" }, `${data.message}`),
+              });
             }
             break;
           default:
@@ -187,6 +258,16 @@ const initWebsocket = async (isReconnect = false) => {
     };
     websocket.onerror = () => {
       console.log("WebSocket连接错误");
+      ElNotification({
+        offset: 60,
+        title: "错误提示",
+        duration: 3000,
+        message: h(
+          "div",
+          { style: "color: #f56c6c; font-weight: 600;" },
+          "WebSocket连接错误"
+        ),
+      });
     };
   } else {
     console.log("WebSocket连接失败");
@@ -223,39 +304,24 @@ const reConnect = () => {
 
 const getMessageList = async () => {
   loadingMessage.value = true;
-  const res = await getChatList({
+  const message = {
+    type: "getChatList",  // 请求聊天记录
     size: 10,
+    current: 1,
     last_id: messageList.value.length > 0 ? messageList.value[0].id : "",
-  });
+  };
+  websocket.send(JSON.stringify(message));
+};
 
-  if (res.code == 0) {
-    const list = res.result.list;
-
-    if (messageList.value.length > 0) {
-      if (Array.isArray(list) && list.length) {
-        messageList.value = list.concat(messageList.value);
-        if (list.length == 10) {
-          canLoadMore.value = true;
-        } else {
-          canLoadMore.value = false;
-        }
-      } else {
-        canLoadMore.value = false;
-      }
-    } else {
-      if (Array.isArray(list) && list.length) {
-        messageList.value = list;
-        if (list.length == 10) {
-          canLoadMore.value = true;
-        } else {
-          canLoadMore.value = false;
-        }
-      } else {
-        canLoadMore.value = false;
-      }
-    }
-    loadingMessage.value = false;
-  }
+const revertOneChat = async (id) => {
+  if (!id) return;
+  websocket.send(
+    JSON.stringify({
+      type: "revert",
+      user_id: getUserInfo.value.id,
+      message_id: id,
+    })
+  );
 };
 
 // 清空聊天记录
@@ -263,18 +329,13 @@ const clearHistory = async () => {
   ElMessageBox.confirm("确认清空吗", "提示", {
     confirmButtonText: "确认",
     cancelButtonText: "取消",
-  }).then(async () => {
-    const res = await clearChat();
-    if (res.code == 0) {
-      ElNotification({
-        offset: 60,
-        title: "提示",
-        duration: 3000,
-        message: h("div", { style: "color: #7ec050; font-weight: 600;" }, "聊天记录已清空"),
-      });
-      messageList.value = [];
-      canLoadMore.value = false;
-    }
+  }).then(() => {
+    websocket.send(
+      JSON.stringify({
+        type: "clearHistory",
+        user_id: getUserInfo.value.id,
+      })
+    );
   });
 };
 
@@ -355,30 +416,6 @@ const handleChange = async (uploadFile) => {
   }
 };
 
-const revertOneChat = async (id) => {
-  if (!id) return;
-  const res = await deleteOneChat(id);
-  if (res.code == 0) {
-    let index = messageList.value.findIndex((item) => item.id === id);
-    if (index !== -1) {
-      messageList.value.splice(index, 1);
-    }
-    // websocket 发送撤回消息的信息 通知其他用户撤回消息
-    websocket.send(
-      JSON.stringify({
-        type: "revert",
-        message_id: id,
-      })
-    );
-    ElNotification({
-      offset: 60,
-      title: "提示",
-      duration: 3000,
-      message: h("div", { style: "color: #7ec050; font-weight: 600;" }, "撤回成功"),
-    });
-  }
-};
-
 const clearWebsocket = () => {
   websocket && websocket.close();
   websocket = null;
@@ -397,9 +434,9 @@ watch(
   }
 );
 
-onMounted(() => {
-  getMessageList();
-});
+// onMounted(() => {
+//   getMessageList();
+// });
 
 onBeforeUnmount(() => {
   clearWebsocket();

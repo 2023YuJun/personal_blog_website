@@ -21,7 +21,6 @@ class AuthMiddleware:
             'article/revert/',
             'article/isPublic/',
             'article/getArticleList/',
-            'chat/delete/',
             'comment/delete/',
             'comment/backDelete/',
             'config/update/',
@@ -144,7 +143,6 @@ class AdminAuthMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
         self.paths = [
-            'chat/delete/',
             'config/update/',
             'pageHeader/addOrUpdate/',
             'pageHeader/delete/',

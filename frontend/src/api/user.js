@@ -1,4 +1,5 @@
 import http from "@/config/request";
+import Axios from "axios";
 import { user } from "@/store/index.js";
 import { h } from "vue";
 import { ElNotification } from "element-plus";
@@ -73,19 +74,23 @@ export const imgUpload = async (data) => {
   const formData = new FormData();
   formData.append("file", res);
   const userStore = user();
-
+  const token = userStore.getToken;
   return new Promise((resolve) => {
-    http
-      .post("/api/upload/img/", formData, {
-        config: {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            "Authorization": userStore.getToken,
-          },
-        },
+    Axios({
+      method: "post",
+      url: "/api/upload/img/",
+      data: formData,
+      headers: {
+        "Content-Type": "multipart/form-data",
+        "Authorization": token,
+      },
+    })
+      .then((response) => {
+        resolve(response.data);
       })
-      .then((res) => {
-        resolve(res);
+      .catch((error) => {
+        console.error("上传失败:", error);
+        // 在此处可以做错误处理，例如显示通知等
       });
   });
 };

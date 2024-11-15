@@ -5,11 +5,16 @@ from asgiref.sync import sync_to_async
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-from apps.chat.service import create_chat
+from utils.result import result, throw_error, ERRORCODE
+from apps.chat.service import create_chat, delete_chats, delete_one_chat, get_chat_list, get_one_chat, get_all_chats
 from apps.user.service import get_one_user_info
 from utils.sensitive import filter_sensitive
+from utils.minioUpload import delete_minio_imgs
 
 redis_client = redis.StrictRedis(host='110.41.38.135', port=6379, db=0, decode_responses=True)
+
+chat_error_code = ERRORCODE['CHAT']
+auth_error_code = ERRORCODE['AUTH']
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -42,14 +47,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
             if message_type == "init":
                 await self.handle_init_message(message)
 
+            elif message_type == "offline":
+                await self.handle_offline_message(message)
+
+            elif message_type == "getChatList":
+                await self.handle_getChatList_message(message)
+
             elif message_type == "message":
                 await self.handle_message(message)
 
             elif message_type == "revert":
                 await self.handle_revert_message(message)
 
-            elif message_type == "offline":
-                await self.handle_offline_message(message)
+            elif message_type == "clearHistory":
+                await self.handle_clearHistory_message(message)
 
         except Exception as e:
             print(f"接收消息时发生错误: {str(e)}")
@@ -66,6 +77,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
         else:
             await self.send_online_to_all()
 
+    # 处理 "offline" 消息类型
+    async def handle_offline_message(self, message):
+        if message.get("user_id"):
+            user = await self.safe_get_one_user_info({"id": message["user_id"]})
+            if user:
+                await self.keep_latest_online_list("close", {"user_id": user.id, "nick_name": user.nick_name})
+
     # 处理 "message" 消息类型
     async def handle_message(self, message):
         message["content"] = await self.filter_sensitive(message["content"])
@@ -76,19 +94,76 @@ class ChatConsumer(AsyncWebsocketConsumer):
         res = await self.safe_create_chat(message)
         if res:
             message["id"] = res.id
-        await self.send_to_all_clients(message)
+        response = result("消息发送成功", message)
+        response["type"] = "message"
+        await self.send_to_all_clients(response)
 
     # 处理 "revert" 消息类型
     async def handle_revert_message(self, message):
-        if message.get("message_id"):
-            await self.send_to_all_clients(message)
+        try:
+            chat_id = message.get("message_id")
+            user_id = message.get("user_id")
+            if chat_id:
+                one = await self.get_one_chat(chat_id)
+                if not one:
+                    response = throw_error(chat_error_code, "消息不存在")
+                    response["type"] = "revert"
+                    await self.send_to_all_clients(response)
+                    return
 
-    # 处理 "offline" 消息类型
-    async def handle_offline_message(self, message):
-        if message.get("user_id"):
-            user = await self.safe_get_one_user_info({"id": message["user_id"]})
-            if user:
-                await self.keep_latest_online_list("close", {"user_id": user.id, "nick_name": user.nick_name})
+                if one.user_id == user_id:
+                    if one.content_type == "image":
+                        content = one.content
+                        arr = [content.split("/").pop()]
+                        await sync_to_async(delete_minio_imgs)(arr)
+
+                    await self.delete_one_chat(chat_id, user_id)
+                    response = result("撤回成功", {"message_id": chat_id})
+                    response["type"] = "revert"
+                    await self.send_to_all_clients(response)
+                else:
+                    response = throw_error(chat_error_code, "撤回失败，不允许撤回他人消息")
+                    response["type"] = "revert"
+                    await self.send_to_all_clients(response)
+        except Exception as err:
+            print(f"撤回消息时发生错误: {str(err)}")
+            response = throw_error(chat_error_code, "撤回失败")
+            response["type"] = "revert"
+            await self.send_to_all_clients(response)
+
+    async def handle_clearHistory_message(self, message):
+        try:
+            user_info = await self.safe_get_one_user_info({id: message["user_id"]})
+            if user_info.role == 1:
+                arr = await self.get_all_chats()
+                if arr:
+                    arr = [item.content.split("/").pop() for item in arr]
+                    await sync_to_async(delete_minio_imgs)(arr)
+
+                await self.delete_chats()
+
+                response = result("聊天记录已清空", {})
+                response["type"] = "clearHistory"
+                await self.send_to_all_clients(response)
+            else:
+                response = throw_error(auth_error_code, "权限不足，无法清空聊天记录")
+                response["type"] = "clearHistory"
+                await self.send_to_all_clients(response)
+        except Exception as err:
+            print(f"清空聊天记录时发生错误: {str(err)}")
+            response = throw_error(chat_error_code, "清空聊天记录失败")
+            response["type"] = "clearHistory"
+            await self.send_to_all_clients(response)
+
+    async def handle_getChatList_message(self, message):
+        chat_list = await self.get_chat_list(message)
+
+        response = result("获取聊天列表成功", {
+            "list": chat_list.get("list", []),
+            "total": chat_list.get("total", 0),
+        })
+        response["type"] = "getChatList"
+        await self.send_to_all_clients(response)
 
     # 将在线用户信息存储到 Redis
     async def keep_latest_online_list(self, action, message):
@@ -128,24 +203,37 @@ class ChatConsumer(AsyncWebsocketConsumer):
         message_json = json.dumps(message)
         await self.channel_layer.group_send("chat_group", {"type": "chat_message", "message": message_json})
 
-    # 处理消息广播
     async def chat_message(self, event):
         message = event['message']
         await self.send(text_data=message)
 
-    # 获取当前时间
     def now(self):
         import datetime
         return datetime.datetime.now()
 
-    # 过滤敏感词
     async def filter_sensitive(self, content):
         return await database_sync_to_async(filter_sensitive)(content)
 
-    # 获取用户信息
     async def safe_get_one_user_info(self, query_filters):
         return await database_sync_to_async(get_one_user_info)(query_filters)
 
-    # 创建聊天记录
     async def safe_create_chat(self, message):
         return await database_sync_to_async(create_chat)(message)
+
+    async def get_chat_list(self, params):
+        return await database_sync_to_async(get_chat_list)(params)
+
+    async def get_all_chats(self):
+        return await database_sync_to_async(get_all_chats)()
+
+    async def clear_all_chats(self):
+        return await database_sync_to_async(delete_chats)()
+
+    async def get_one_chat(self, chat_id):
+        return await database_sync_to_async(get_one_chat)(chat_id)
+
+    async def delete_chats(self):
+        return await database_sync_to_async(delete_chats)()
+
+    async def delete_one_chat(self, chat_id, user_id):
+        return await database_sync_to_async(delete_one_chat)(chat_id, user_id)

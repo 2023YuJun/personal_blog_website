@@ -4,7 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01d6a626-47e0-4c13-8582-b462f8b63d5e" name="更改" comment="重新修改每日一句编写方式，完善留言功能" />
+    <list default="true" id="01d6a626-47e0-4c13-8582-b462f8b63d5e" name="更改" comment="部署Redis到服务器中，使用Redis做为聊天室的通道">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/chat/consumer.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/chat/consumer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/apps/chat/service.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/chat/service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/backend/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/backend/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/middlewares.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/middlewares.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/api/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/user.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/ChatRoom/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/ChatRoom/index.vue" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -87,6 +95,8 @@
       <workItem from="1730042941184" duration="4000" />
       <workItem from="1731094322596" duration="363000" />
       <workItem from="1731145705427" duration="274000" />
+      <workItem from="1731526096577" duration="411000" />
+      <workItem from="1731684705027" duration="617000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1727894924909</created>
@@ -270,7 +280,28 @@
       <option name="project" value="LOCAL" />
       <updated>1731145924912</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="修改网站名称">
+      <created>1731526253764</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1731526253764</updated>
+    </task>
+    <task id="LOCAL-00028" summary="重写留言服务部分代码，完善留言功能序列化器代码">
+      <created>1731526389944</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1731526389944</updated>
+    </task>
+    <task id="LOCAL-00029" summary="部署Redis到服务器中，使用Redis做为聊天室的通道">
+      <created>1731526472286</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1731526472286</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -340,7 +371,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="initial commit" />
     <MESSAGE value="add README.md" />
     <MESSAGE value="优化后端目录结构，修改部分app的service逻辑" />
     <MESSAGE value="添加后台管理页面开发内容" />
@@ -363,6 +393,9 @@
     <MESSAGE value="修复评论无法存储emoji字符问题（需要使用utf8mb4编码），优化通知逻辑，优化点赞数据更新逻辑，修改存储评论字段为长字段" />
     <MESSAGE value="重写聊天室功能，实现websocket连接，解决多线程导致数据库连接失效问题" />
     <MESSAGE value="重新修改每日一句编写方式，完善留言功能" />
-    <option name="LAST_COMMIT_MESSAGE" value="重新修改每日一句编写方式，完善留言功能" />
+    <MESSAGE value="修改网站名称" />
+    <MESSAGE value="重写留言服务部分代码，完善留言功能序列化器代码" />
+    <MESSAGE value="部署Redis到服务器中，使用Redis做为聊天室的通道" />
+    <option name="LAST_COMMIT_MESSAGE" value="部署Redis到服务器中，使用Redis做为聊天室的通道" />
   </component>
 </project>

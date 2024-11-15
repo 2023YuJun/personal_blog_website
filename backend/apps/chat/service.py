@@ -27,11 +27,11 @@ def delete_chats():
     return res
 
 
-def delete_one_chat(chat_id):
+def delete_one_chat(chat_id, user_id):
     """
     删除单条聊天记录（撤销聊天）
     """
-    res = Chat.objects.filter(id=chat_id).delete()
+    res = Chat.objects.filter(id=chat_id, user_id=user_id).delete()
     return res
 
 
