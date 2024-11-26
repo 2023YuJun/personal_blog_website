@@ -136,7 +136,7 @@ def get_author_name_by_id(user_id):
     """
     根据用户id获取昵称
     """
-    user = User.objects.get(pk=user_id)
+    user = User.objects.filter(pk=user_id).first()
     return user.nick_name if user else None
 
 

@@ -8,48 +8,52 @@ from utils.result import ERRORCODE, throw_error
 error_code = ERRORCODE['CATEGORY']
 
 
-def create_category(request):
+def create_category(category):
     """
     新增分类
     """
-    category_name = request.data.get('category_name')
+    category_name = category.get('category_name')
     current_time = timezone.localtime()
     category_obj = Category.objects.create(category_name=category_name, createdAt=current_time, updatedAt=current_time)
     return category_obj
 
 
-def update_category(request):
+def update_category(category):
     """
     修改分类
     """
-    category_id = request.data.get('id')
-    category_name = request.data.get('category_name')
+    category_id = category.get('id')
+    category_name = category.get('category_name')
     current_time = timezone.localtime()
     res = Category.objects.filter(id=category_id).update(category_name=category_name, updatedAt=current_time)
     return res > 0
 
 
-def delete_categories(request):
+def delete_categories(category):
     """
     删除分类
     """
-    id_list = request.data.get('id_list')
-    res = Category.objects.filter(id__in=id_list).delete()
-    res = CategorySerializer(res).data
-    return res[0]
+    id_list = category.get('categoryIdList')
+    res, _ = Category.objects.filter(id__in=id_list).delete()
+    return res
 
 
-def get_one_category(filters):
+def get_one_category(category):
     """
     根据id或者分类名称获取分类信息
     """
     query = Q()
-    if 'id' in filters:
-        query &= Q(id=filters['id'])
-    if 'category_name' in filters:
-        query &= Q(category_name=filters['category_name'])
 
+    if category.get('id'):
+        query &= Q(id=category['id'])
+
+    if category.get('category_name'):
+        query &= Q(category_name=category['category_name'])
+
+    if not query:
+        return None
     res = Category.objects.filter(query).values('id', 'category_name').first()
+
     return res if res else None
 
 
@@ -57,18 +61,18 @@ def get_category_name_by_id(category_id):
     """
     通过分类id获取分类名称
     """
-    category = Category.objects.get(pk=category_id)
+    category = Category.objects.filter(pk=category_id).first()
     return category.category_name if category else None
 
 
-def get_category_list(request):
+def get_category_list(category):
     """
     分页获取分类列表
     """
 
-    current = request.data.get('current', 1)
-    size = request.data.get('size', 10)
-    category_name = request.data.get('category_name', None)
+    current = category.get('current', 1)
+    size = category.get('size', 10)
+    category_name = category.get('category_name', None)
 
     query = Q()
     if category_name:
@@ -102,12 +106,12 @@ def get_category_count():
     return count
 
 
-def verify_category(request):
+def verify_category(category):
     """
     校验分类
     """
-    category_name = request.data.get('category_name')
-    category_id = request.data.get('id')
+    category_name = category.get('category_name')
+    category_id = category.get('id')
 
     if not category_name:
         print("分类名称不能为空")
@@ -121,11 +125,11 @@ def verify_category(request):
     return None
 
 
-def verify_delete_categories(request):
+def verify_delete_categories(category):
     """
     校验删除分类
     """
-    category_id_list = request.data.get('categoryIdList', [])
+    category_id_list = category.get('categoryIdList', [])
 
     if not category_id_list:
         print("分类id列表不能为空")

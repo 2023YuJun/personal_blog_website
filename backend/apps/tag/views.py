@@ -28,9 +28,10 @@ class TagView(APIView):
         新增标签
         """
         try:
-            response = verify_tag(request)
+            tag = request.data
+            response = verify_tag(tag)
             if response is None:
-                res = create_tag(request)
+                res = create_tag(tag)
                 return Response(result("新增标签成功", {
                     'id': res.id,
                     'tag_name': res.tag_name,
@@ -46,9 +47,10 @@ class TagView(APIView):
         修改标签
         """
         try:
-            response = verify_tag(request)
+            tag = request.data
+            response = verify_tag(tag)
             if response is None:
-                res = update_tag(request)
+                res = update_tag(tag)
                 return Response(result("修改标签成功", res), status=status.HTTP_200_OK)
             else:
                 return response
@@ -61,9 +63,10 @@ class TagView(APIView):
         删除标签
         """
         try:
-            response = verify_delete_tags(request)
+            tag = request.data
+            response = verify_delete_tags(tag)
             if response is None:
-                res = delete_tags(request)
+                res = delete_tags(tag)
                 return Response(result("删除标签成功", {'updateNum': res}), status=status.HTTP_200_OK)
             else:
                 return response
@@ -76,7 +79,8 @@ class TagView(APIView):
         分页查找标签
         """
         try:
-            res = get_tag_list(request)
+            tag = request.data
+            res = get_tag_list(tag)
             return Response(result("分页查找标签成功", res), status=status.HTTP_200_OK)
         except Exception as err:
             print(err)

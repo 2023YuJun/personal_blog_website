@@ -80,7 +80,7 @@ class ArticleView(APIView):
                     data = request.data
                     tag_list = data.get("tagList")
                     category = data.get("category")
-                    data["category_id"] = create_category_or_return(category["category_name"], category["id"])
+                    data["category_id"] = create_category_or_return(category)
                     new_article = create_article(data)
                     if new_article:
                         new_article_tag_list = create_article_tag_by_article_id(new_article.id, tag_list)
@@ -100,33 +100,32 @@ class ArticleView(APIView):
             return Response(throw_error(error_code, "新增文章失败"), status=400)
 
     def update_article(self, request):
-        with transaction.atomic():
-            try:
-                verify_article_param(request)
-                update_judge_title_exist(request)
-                data = request.data
-                tag_list = data.get("tagList")
-                category = data.get("category")
-                old_cover = get_article_cover_by_id(data["id"])
+        try:
+            verify_article_param(request)
+            update_judge_title_exist(request)
+            data = request.data
+            tag_list = data.get("tagList")
+            category = data.get("category")
+            old_cover = get_article_cover_by_id(data["id"])
 
-                # 删除旧封面图片的逻辑
-                if old_cover and old_cover != data["article_cover"]:
-                    delete_minio_imgs([old_cover.split("/")[-1]])
+            # 删除旧封面图片的逻辑
+            if old_cover and old_cover != data["article_cover"]:
+                delete_minio_imgs([old_cover.split("/")[-1]])
 
-                delete_article_tag(data["id"])
-                data["category_id"] = create_category_or_return(category["category_name"], category["id"])
-                new_article_tag_list = create_article_tag_by_article_id(data["id"], tag_list)
-                res = update_article(data)
-                if res:
-                    return Response(result("修改文章成功", {
-                        "res": res,
-                        "newArticleTagList": new_article_tag_list,
-                    }), status=200)
-                else:
-                    return Response(throw_error(error_code, "修改文章失败"), status=400)
-            except Exception as err:
-                print(err)
+            delete_article_tag(data["id"])
+            data["category_id"] = create_category_or_return(category)
+            new_article_tag_list = create_article_tag_by_article_id(data["id"], tag_list)
+            res = update_article(data)
+            if res:
+                return Response(result("修改文章成功", {
+                    "res": res,
+                    "newArticleTagList": new_article_tag_list,
+                }), status=200)
+            else:
                 return Response(throw_error(error_code, "修改文章失败"), status=400)
+        except Exception as err:
+            print(err)
+            return Response(throw_error(error_code, "修改文章失败"), status=400)
 
     def update_top(self, request, id, is_top):
         try:

@@ -29,9 +29,10 @@ class CategoryView(APIView):
 
     def add_category(self, request):
         try:
-            response = verify_category(request)
+            category = request.data
+            response = verify_category(category)
             if response is None:
-                res = create_category(request)
+                res = create_category(category)
                 return Response(result("新增分类成功", {
                     "id": res.id,
                     "category_name": res.category_name,
@@ -44,9 +45,10 @@ class CategoryView(APIView):
 
     def update_category(self, request):
         try:
-            response = verify_category(request)
+            category = request.data
+            response = verify_category(category)
             if response is None:
-                res = update_category(request)
+                res = update_category(category)
                 return Response(result("修改分类成功", res), status=status.HTTP_200_OK)
             else:
                 return response
@@ -56,9 +58,10 @@ class CategoryView(APIView):
 
     def delete_categories(self, request):
         try:
-            response = verify_delete_categories(request)
+            category = request.data
+            response = verify_delete_categories(category)
             if response is None:
-                res = delete_categories(request)
+                res = delete_categories(category)
                 return Response(result("删除分类成功", {
                     "updateNum": res,
                 }), status=status.HTTP_200_OK)
@@ -70,7 +73,8 @@ class CategoryView(APIView):
 
     def get_category_list(self, request):
         try:
-            res = get_category_list(request)
+            category = request.data
+            res = get_category_list(category)
             return Response(result("分页查找分类成功", res), status=status.HTTP_200_OK)
         except Exception as err:
             print(err)

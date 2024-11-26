@@ -8,32 +8,32 @@ from .serializers import TagSerializer
 error_code = ERRORCODE['TAG']
 
 
-def create_tag(request):
+def create_tag(tag):
     """
     新增标签
     """
-    tag_name = request.data.get('tag_name')
+    tag_name = tag.get('tag_name')
     current_time = timezone.localtime()
     res = Tag.objects.create(tag_name=tag_name, createdAt=current_time, updatedAt=current_time)
     return res
 
 
-def update_tag(request):
+def update_tag(tag):
     """
     修改标签
     """
     current_time = timezone.localtime()
-    id = request.data.get('id')
-    tag_name = request.data.get('tag_name')
+    id = tag.get('id')
+    tag_name = tag.get('tag_name')
     res = Tag.objects.filter(id=id).update(tag_name=tag_name, updatedAt=current_time)
     return res > 0
 
 
-def delete_tags(request):
+def delete_tags(tag):
     """
     删除标签
     """
-    id_list = request.data.get('tagIdList')
+    id_list = tag.get('tagIdList')
     res = Tag.objects.filter(id__in=id_list).delete()
     return res
 
@@ -55,13 +55,13 @@ def get_one_tag(id=None, tag_name=None):
     return res
 
 
-def get_tag_list(request):
+def get_tag_list(tag):
     """
     获取标签列表
     """
-    current = request.data.get('current')
-    size = request.data.get('size')
-    tag_name = request.data.get('tag_name')
+    current = tag.get('current')
+    size = tag.get('size')
+    tag_name = tag.get('tag_name')
     offset = size * (current - 1)
 
     where_opt = Q()
@@ -108,9 +108,9 @@ def get_tag_count():
     return res
 
 
-def verify_tag(request):
-    id = request.data.get('id')
-    tag_name = request.data.get('tag_name')
+def verify_tag(tag):
+    id = tag.get('id')
+    tag_name = tag.get('tag_name')
     if not tag_name:
         print("标签名称不能为空")
         return Response(throw_error(error_code, "标签名称不能为空"), status=400)
@@ -123,8 +123,8 @@ def verify_tag(request):
     return None
 
 
-def verify_delete_tags(request):
-    tag_id_list = request.data.get('tagIdList')
+def verify_delete_tags(tag):
+    tag_id_list = tag.get('tagIdList')
     if not tag_id_list:
         print("标签id列表不能为空")
         return Response(throw_error(error_code, "标签id列表不能为空"), status=400)
