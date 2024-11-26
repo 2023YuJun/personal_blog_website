@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Article
 from .models import ArticleTag
+from django.utils import timezone
 from apps.category.service import get_category_name_by_id
 from apps.article.articleTag_service import get_tag_list_by_article_id
 from apps.user.service import get_author_name_by_id
@@ -31,10 +32,12 @@ class ArticleSerializer(serializers.ModelSerializer):
         return get_author_name_by_id(obj.author_id)
 
     def get_createdAt(self, obj):
-        return obj.createdAt.strftime('%Y-%m-%d %H:%M:%S')
+        local_time = timezone.localtime(obj.createdAt)
+        return local_time.strftime('%Y-%m-%d %H:%M:%S')
 
     def get_updatedAt(self, obj):
-        return obj.updatedAt.strftime('%Y-%m-%d %H:%M:%S')
+        local_time = timezone.localtime(obj.updatedAt)
+        return local_time.strftime('%Y-%m-%d %H:%M:%S')
 
 
 class ArticleTagSerializer(serializers.ModelSerializer):

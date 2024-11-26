@@ -4,15 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01d6a626-47e0-4c13-8582-b462f8b63d5e" name="更改" comment="部署Redis到服务器中，使用Redis做为聊天室的通道">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/chat/consumer.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/chat/consumer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/apps/chat/service.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/apps/chat/service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/backend/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/backend/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/middlewares.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/middlewares.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/api/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/user.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/ChatRoom/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/ChatRoom/index.vue" afterDir="false" />
-    </list>
+    <list default="true" id="01d6a626-47e0-4c13-8582-b462f8b63d5e" name="更改" comment="实现将聊天室中所有有关聊天数据操作的请求都改为ws请求，修复前端无法上传图像bug" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -97,6 +89,7 @@
       <workItem from="1731145705427" duration="274000" />
       <workItem from="1731526096577" duration="411000" />
       <workItem from="1731684705027" duration="617000" />
+      <workItem from="1731687651926" duration="874000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1727894924909</created>
@@ -301,7 +294,14 @@
       <option name="project" value="LOCAL" />
       <updated>1731526472286</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="实现将聊天室中所有有关聊天数据操作的请求都改为ws请求，修复前端无法上传图像bug">
+      <created>1731688504824</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1731688504824</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -371,7 +371,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add README.md" />
     <MESSAGE value="优化后端目录结构，修改部分app的service逻辑" />
     <MESSAGE value="添加后台管理页面开发内容" />
     <MESSAGE value="已完成前台和后台常用接口连接编写" />
@@ -396,6 +395,7 @@
     <MESSAGE value="修改网站名称" />
     <MESSAGE value="重写留言服务部分代码，完善留言功能序列化器代码" />
     <MESSAGE value="部署Redis到服务器中，使用Redis做为聊天室的通道" />
-    <option name="LAST_COMMIT_MESSAGE" value="部署Redis到服务器中，使用Redis做为聊天室的通道" />
+    <MESSAGE value="实现将聊天室中所有有关聊天数据操作的请求都改为ws请求，修复前端无法上传图像bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="实现将聊天室中所有有关聊天数据操作的请求都改为ws请求，修复前端无法上传图像bug" />
   </component>
 </project>

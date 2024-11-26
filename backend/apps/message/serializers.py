@@ -3,6 +3,7 @@ from .models import Message
 from apps.user.service import get_one_user_info
 from apps.like.service import get_is_like_by_ip_and_type, get_is_like_by_id_and_type
 from apps.comment.service import get_comment_total
+from django.utils import timezone
 
 
 class MessageSerializer(serializers.ModelSerializer):
@@ -18,10 +19,12 @@ class MessageSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_createdAt(self, obj):
-        return obj.createdAt.strftime('%Y-%m-%d %H:%M:%S')
+        local_time = timezone.localtime(obj.createdAt)
+        return local_time.strftime('%Y-%m-%d %H:%M:%S')
 
     def get_updatedAt(self, obj):
-        return obj.updatedAt.strftime('%Y-%m-%d %H:%M:%S')
+        local_time = timezone.localtime(obj.updatedAt)
+        return local_time.strftime('%Y-%m-%d %H:%M:%S')
 
     def get_nick_name(self, obj):
         if obj.user_id:

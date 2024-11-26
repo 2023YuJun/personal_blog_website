@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Talk
 from .models import TalkPhoto
 from ..user.service import get_one_user_info
+from django.utils import timezone
 
 
 class TalkSerializer(serializers.ModelSerializer):
@@ -32,10 +33,12 @@ class TalkSerializer(serializers.ModelSerializer):
         return user_info.avatar if user_info else None
 
     def get_createdAt(self, obj):
-        return obj.createdAt.strftime('%Y-%m-%d %H:%M:%S')
+        local_time = timezone.localtime(obj.createdAt)
+        return local_time.strftime('%Y-%m-%d %H:%M:%S')
 
     def get_updatedAt(self, obj):
-        return obj.updatedAt.strftime('%Y-%m-%d %H:%M:%S')
+        local_time = timezone.localtime(obj.updatedAt)
+        return local_time.strftime('%Y-%m-%d %H:%M:%S')
 
 
 class TalkPhotoSerializer(serializers.ModelSerializer):

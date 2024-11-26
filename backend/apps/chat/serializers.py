@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Chat
 from apps.user.service import get_one_user_info
+from django.utils import timezone
 
 
 class ChatSerializer(serializers.ModelSerializer):
@@ -26,7 +27,9 @@ class ChatSerializer(serializers.ModelSerializer):
         return None
 
     def get_createdAt(self, obj):
-        return obj.createdAt.strftime('%Y-%m-%d %H:%M:%S')
+        local_time = timezone.localtime(obj.createdAt)
+        return local_time.strftime('%Y-%m-%d %H:%M:%S')
 
     def get_updatedAt(self, obj):
-        return obj.updatedAt.strftime('%Y-%m-%d %H:%M:%S')
+        local_time = timezone.localtime(obj.updatedAt)
+        return local_time.strftime('%Y-%m-%d %H:%M:%S')
