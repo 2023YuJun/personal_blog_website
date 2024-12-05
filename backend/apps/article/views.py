@@ -16,12 +16,12 @@ class ArticleView(APIView):
             return self.create_article(request)
         elif 'titleExist' in request.path:
             return self.get_article_info_by_title(request)
-        elif 'getArticleList' in request.path:
-            return self.get_article_list(request)
         elif 'getArticleListByTagId' in request.path:
             return self.get_article_list_by_tag_id(request)
         elif 'getArticleListByCategoryId' in request.path:
             return self.get_article_list_by_category_id(request)
+        elif 'getArticleList' in request.path:
+            return self.get_article_list(request)
         elif 'updateUrl' in request.path:
             return update_url()
 

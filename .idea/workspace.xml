@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01d6a626-47e0-4c13-8582-b462f8b63d5e" name="更改" comment="实现将聊天室中所有有关聊天数据操作的请求都改为ws请求，修复前端无法上传图像bug" />
+    <list default="true" id="01d6a626-47e0-4c13-8582-b462f8b63d5e" name="更改" comment="优化传入前端时间显示，重写后端存储的时间序列化输出形式" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -90,6 +90,8 @@
       <workItem from="1731526096577" duration="411000" />
       <workItem from="1731684705027" duration="617000" />
       <workItem from="1731687651926" duration="874000" />
+      <workItem from="1732593170974" duration="255000" />
+      <workItem from="1733380380633" duration="1000" />
     </task>
     <task id="LOCAL-00001" summary="initial commit">
       <created>1727894924909</created>
@@ -301,7 +303,21 @@
       <option name="project" value="LOCAL" />
       <updated>1731688504824</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="修复新增文章时，无法添加新的分类和标签问题，优化部分数据库查询逻辑">
+      <created>1732593283571</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1732593283571</updated>
+    </task>
+    <task id="LOCAL-00032" summary="优化传入前端时间显示，重写后端存储的时间序列化输出形式">
+      <created>1732593400606</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1732593400606</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -371,8 +387,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="优化后端目录结构，修改部分app的service逻辑" />
-    <MESSAGE value="添加后台管理页面开发内容" />
     <MESSAGE value="已完成前台和后台常用接口连接编写" />
     <MESSAGE value="解决前端运行时间显示问题，修改了所有视图类路径查找匹配判断，解决部分后端数据传输到前端序列化出错问题" />
     <MESSAGE value="修复请求格式无法被后端识别问题" />
@@ -396,6 +410,8 @@
     <MESSAGE value="重写留言服务部分代码，完善留言功能序列化器代码" />
     <MESSAGE value="部署Redis到服务器中，使用Redis做为聊天室的通道" />
     <MESSAGE value="实现将聊天室中所有有关聊天数据操作的请求都改为ws请求，修复前端无法上传图像bug" />
-    <option name="LAST_COMMIT_MESSAGE" value="实现将聊天室中所有有关聊天数据操作的请求都改为ws请求，修复前端无法上传图像bug" />
+    <MESSAGE value="修复新增文章时，无法添加新的分类和标签问题，优化部分数据库查询逻辑" />
+    <MESSAGE value="优化传入前端时间显示，重写后端存储的时间序列化输出形式" />
+    <option name="LAST_COMMIT_MESSAGE" value="优化传入前端时间显示，重写后端存储的时间序列化输出形式" />
   </component>
 </project>
